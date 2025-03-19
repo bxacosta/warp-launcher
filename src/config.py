@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
-from typing import Final, Dict, Any
+from typing import Final, Dict, Any, Optional, Tuple
 
-from src.constants import DEFAULT_LAUNCH_MODE, DEFAULT_STARTING_PATH
+from src.constants import DEFAULT_LAUNCH_MODE, DEFAULT_STARTING_PATH, PARENT_PROCESS_IDENTIFIER
 from src.enums import LaunchMode
 from src.utils import string_to_path
 
@@ -34,6 +34,9 @@ class Config:
 
         return Config(launch_mode, starting_path)
 
+    def is_starting_path_parent_process(self) -> bool:
+        return str(self.starting_path) == PARENT_PROCESS_IDENTIFIER
+
 
 class ConfigHandler:
     def __init__(self, config_file_path: Path) -> None:
@@ -41,7 +44,7 @@ class ConfigHandler:
 
     def load_config(self) -> Config:
         """
-        Load configuration from file, or return default config on error.
+        Load configuration from file, or return default config if not exist or an error occurs.
         """
         try:
             if not self.config_file_path.exists():
@@ -53,14 +56,14 @@ class ConfigHandler:
             print(f"Error loading configuration ({self.config_file_path}): {e}")
             return Config(DEFAULT_LAUNCH_MODE, DEFAULT_STARTING_PATH)
 
-    def save_config(self, config: Config) -> bool:
+    def save_config(self, config: Config) -> Tuple[bool, Optional[str]]:
         """
         Save the provided configuration to file.
         """
         try:
             with self.config_file_path.open("w", encoding="utf-8") as config_file:
                 json.dump(config.to_dict(), config_file, indent=4)
-            return True
+            return True, None
         except IOError as e:
-            print(f"Error saving configuration ({self.config_file_path}): {e}")
-            return False
+            print(f"Error saving configuration '{self.config_file_path}' with content '{config.to_dict()}': {e}")
+            return False, f"Failed to save config: {e}"
