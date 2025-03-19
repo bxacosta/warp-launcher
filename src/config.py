@@ -4,15 +4,16 @@ from typing import Final, Dict, Any
 
 from src.constants import DEFAULT_LAUNCH_MODE, DEFAULT_STARTING_PATH
 from src.enums import LaunchMode
+from src.utils import string_to_path
 
 _LAUNCH_MODE_KEY: Final[str] = "launchMode"
 _STARTING_PATH_KEY: Final[str] = "startingPath"
 
 
 class Config:
-    def __init__(self, mode: LaunchMode, starting_path: str) -> None:
+    def __init__(self, mode: LaunchMode, starting_path: Path) -> None:
         self.mode: LaunchMode = mode
-        self.starting_path: str = starting_path
+        self.starting_path: Path = starting_path
 
     def to_dict(self) -> Dict[str, Any]:
         """
@@ -20,7 +21,7 @@ class Config:
         """
         return {
             _LAUNCH_MODE_KEY: self.mode.value,
-            _STARTING_PATH_KEY: self.starting_path,
+            _STARTING_PATH_KEY: str(self.starting_path),
         }
 
     @staticmethod
@@ -29,10 +30,7 @@ class Config:
         Create a Config instance from a dictionary, handling defaults gracefully.
         """
         launch_mode = LaunchMode.from_value(data.get(_LAUNCH_MODE_KEY)) or DEFAULT_LAUNCH_MODE
-
-        starting_path = data.get(_STARTING_PATH_KEY)
-        if not starting_path or not isinstance(starting_path, str):
-            starting_path = DEFAULT_STARTING_PATH
+        starting_path = string_to_path(data.get(_STARTING_PATH_KEY)) or DEFAULT_STARTING_PATH
 
         return Config(launch_mode, starting_path)
 
