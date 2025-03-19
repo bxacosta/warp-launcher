@@ -29,7 +29,11 @@ class Config:
         Create a Config instance from a dictionary, handling defaults gracefully.
         """
         launch_mode = LaunchMode.from_value(data.get(_LAUNCH_MODE_KEY)) or DEFAULT_LAUNCH_MODE
-        starting_path = data.get(_STARTING_PATH_KEY) or DEFAULT_STARTING_PATH
+
+        starting_path = data.get(_STARTING_PATH_KEY)
+        if not starting_path or not isinstance(starting_path, str):
+            starting_path = DEFAULT_STARTING_PATH
+
         return Config(launch_mode, starting_path)
 
 
@@ -41,10 +45,10 @@ class ConfigHandler:
         """
         Load configuration from file, or return default config on error.
         """
-        if not self.config_file_path.exists():
-            return Config(DEFAULT_LAUNCH_MODE, DEFAULT_STARTING_PATH)
-
         try:
+            if not self.config_file_path.exists():
+                return Config(DEFAULT_LAUNCH_MODE, DEFAULT_STARTING_PATH)
+
             with self.config_file_path.open("r", encoding="utf-8") as config_file:
                 return Config.from_dict(json.load(config_file))
         except Exception as e:
