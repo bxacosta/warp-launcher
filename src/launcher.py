@@ -63,14 +63,17 @@ class Launcher:
         """
         Creates or updates the .vbs launcher script in the installation directory.
         """
-        script_content = (f'warpURI = "warp://action/{config.mode.value}?path=" & startingPath\n' +
-                          'CreateObject("WScript.Shell").Run warpURI, 0, False')
+        script_content = (
+                'If Right(path, 1) = "\\" Then path = Left(path, Len(path) - 1) End If\n' +
+                # 'WScript.Echo "Path: " & path\n' +
+                f'warpURI = "warp://action/{config.mode.value}?path=" & path\n' +
+                'CreateObject("WScript.Shell").Run warpURI, 0, False')
 
         if config.is_starting_path_parent_process():
-            script_content = (f'startingPath = CreateObject("Scripting.FileSystemObject").GetAbsolutePathName(".")\n' +
+            script_content = (f'path = CreateObject("Scripting.FileSystemObject").GetAbsolutePathName(".")\n' +
                               f'{script_content}')
         else:
-            script_content = (f'startingPath = "{str(config.starting_path)}"\n' +
+            script_content = (f'path = "{config.starting_path}"\n' +
                               f'{script_content}')
 
         try:
@@ -78,7 +81,7 @@ class Launcher:
                 script_file.write(script_content)
             return True, None
         except IOError as e:
-            print(f"Error writing script '{str(self.script_file_path)}' with content '{script_content}': {e}")
+            print(f"Error writing script '{self.script_file_path}' with content '{script_content}': {e}")
             return False, f"Failed to write script: {e}"
 
     @staticmethod
@@ -89,7 +92,7 @@ class Launcher:
         if config.is_starting_path_parent_process():
             config.starting_path = Path(os.getcwd())
 
-        uri = f"warp://action/{config.mode.value}?path={str(config.starting_path)}"
+        uri = f"warp://action/{config.mode.value}?path={config.starting_path}"
 
         subprocess.Popen(
             ["cmd", "/c", "start", "", uri],
