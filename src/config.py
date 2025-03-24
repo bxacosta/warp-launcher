@@ -2,29 +2,29 @@ import json
 from pathlib import Path
 from typing import Final, Dict, Any, Optional, Tuple
 
-from src.constants import DEFAULT_LAUNCH_MODE, DEFAULT_STARTING_PATH, PARENT_PROCESS_IDENTIFIER
+from src.constants import DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH, PARENT_PROCESS_IDENTIFIER
 from src.enums import LaunchMode
 from src.logger import setup_logger
 from src.utils import string_to_path
 
 _LAUNCH_MODE_KEY: Final[str] = "launchMode"
-_STARTING_PATH_KEY: Final[str] = "startingPath"
+_LAUNCH_PATH_KEY: Final[str] = "launchPath"
 
 logger = setup_logger(__name__)
 
 
 class Config:
-    def __init__(self, mode: LaunchMode, starting_path: Path) -> None:
-        self.mode: LaunchMode = mode
-        self.starting_path: Path = starting_path
+    def __init__(self, launch_mode: LaunchMode, launch_path: Path) -> None:
+        self.launch_mode: LaunchMode = launch_mode
+        self.launch_path: Path = launch_path
 
     def to_dict(self) -> Dict[str, Any]:
         """
         Convert the Config instance to a dictionary for JSON serialization.
         """
         return {
-            _LAUNCH_MODE_KEY: self.mode.value,
-            _STARTING_PATH_KEY: str(self.starting_path),
+            _LAUNCH_MODE_KEY: self.launch_mode.value,
+            _LAUNCH_PATH_KEY: str(self.launch_path),
         }
 
     @staticmethod
@@ -33,12 +33,12 @@ class Config:
         Create a Config instance from a dictionary, handling defaults gracefully.
         """
         launch_mode = LaunchMode.from_value(data.get(_LAUNCH_MODE_KEY)) or DEFAULT_LAUNCH_MODE
-        starting_path = string_to_path(data.get(_STARTING_PATH_KEY)) or DEFAULT_STARTING_PATH
+        launch_path = string_to_path(data.get(_LAUNCH_PATH_KEY)) or DEFAULT_LAUNCH_PATH
 
-        return Config(launch_mode, starting_path)
+        return Config(launch_mode, launch_path)
 
-    def is_starting_path_parent_process(self) -> bool:
-        return str(self.starting_path) == PARENT_PROCESS_IDENTIFIER
+    def is_launch_path_parent_process(self) -> bool:
+        return str(self.launch_path) == PARENT_PROCESS_IDENTIFIER
 
 
 class ConfigHandler:
@@ -49,24 +49,31 @@ class ConfigHandler:
         """
         Load configuration from file, or return default config if not exist or an error occurs.
         """
+        logger.debug(f"Loading configuration from: '{self.config_file_path}'")
         try:
             if not self.config_file_path.exists():
-                return Config(DEFAULT_LAUNCH_MODE, DEFAULT_STARTING_PATH)
+                return Config(DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH)
 
             with self.config_file_path.open("r", encoding="utf-8") as config_file:
-                return Config.from_dict(json.load(config_file))
+                config_dict = json.load(config_file)
+                logger.debug(f"Loaded configuration: {config_dict}")
+                return Config.from_dict(config_dict)
         except Exception as e:
-            logger.error(f"Error loading configuration ({self.config_file_path}): {e}")
-            return Config(DEFAULT_LAUNCH_MODE, DEFAULT_STARTING_PATH)
+            logger.error(f"Error loading configuration from '{self.config_file_path}': {e}")
+            return Config(DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH)
 
     def save_config(self, config: Config) -> Tuple[bool, Optional[str]]:
         """
         Save the provided configuration to file.
         """
+        logger.debug(f"Saving configuration to: '{self.config_file_path}'")
+        config_dict = config.to_dict()
         try:
             with self.config_file_path.open("w", encoding="utf-8") as config_file:
-                json.dump(config.to_dict(), config_file, indent=4)
+                json.dump(config_dict, config_file, indent=4)
+                logger.debug(f"Saved configuration: {config_dict}")
             return True, None
         except IOError as e:
-            logger.error(f"Error saving configuration '{self.config_file_path}' with content '{config.to_dict()}': {e}")
+            logger.error(
+                f"Error saving configuration to '{self.config_file_path}' with content '{config_dict}': {e}")
             return False, f"Failed to save config: {e}"

@@ -65,12 +65,10 @@ def cli() -> int:
     args = parse_cli_arguments()
 
     # Set log level based on verbosity
-    level = logging.DEBUG if args.verbose else LOG_LEVEL
-    logging.getLogger().setLevel(level)
+    logging.getLogger().setLevel(logging.DEBUG if args.verbose else LOG_LEVEL)
 
     launcher = Launcher()
     config = launcher.config_handler.load_config()
-    logger.debug(f"Loaded configuration: {config.to_dict()}")
 
     # Process launch mode if provided
     if args.mode:
@@ -78,17 +76,17 @@ def cli() -> int:
         if not selected_mode:
             logger.error(f"Invalid mode specified: '{args.mode}'.")
             return 1
-        config.mode = selected_mode
-        logger.info(f"Launch mode set to '{config.mode.name}'")
+        config.launch_mode = selected_mode
+        logger.info(f"Launch mode set to '{config.launch_mode.name}'")
 
-    # Validate and set the starting path if provided
+    # Validate and set the launch path if provided
     if args.path:
         valid_path, error_message = validate_path(args.path)
         if not valid_path:
             logger.error(error_message)
             return 1
-        config.starting_path = valid_path
-        logger.info(f"Starting path set to '{config.starting_path}'")
+        config.launch_path = valid_path
+        logger.info(f"Launch path set to '{config.launch_path}'")
 
     # Process installation if requested
     if args.install:
@@ -101,8 +99,8 @@ def cli() -> int:
     # Launch Warp if requested
     if args.launch:
         launcher.launch_warp(config)
-        resolved_path = os.getcwd() if config.is_starting_path_parent_process() else config.starting_path
-        logger.info(f"Warp launched in '{config.mode.value}' mode at '{resolved_path}'.")
+        resolved_path = os.getcwd() if config.is_launch_path_parent_process() else config.launch_path
+        logger.info(f"Warp launched in '{config.launch_mode.value}' mode at '{resolved_path}'.")
 
     return 0
 

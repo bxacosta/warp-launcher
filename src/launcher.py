@@ -69,14 +69,14 @@ class Launcher:
         script_content = (
                 'If Right(path, 1) = "\\" Then path = Left(path, Len(path) - 1) End If\n' +
                 # 'WScript.Echo "Path: " & path\n' +
-                f'warpURI = "warp://action/{config.mode.value}?path=" & path\n' +
+                f'warpURI = "warp://action/{config.launch_mode.value}?path=" & path\n' +
                 'CreateObject("WScript.Shell").Run warpURI, 0, False')
 
-        if config.is_starting_path_parent_process():
+        if config.is_launch_path_parent_process():
             script_content = (f'path = CreateObject("Scripting.FileSystemObject").GetAbsolutePathName(".")\n' +
                               f'{script_content}')
         else:
-            script_content = (f'path = "{config.starting_path}"\n' +
+            script_content = (f'path = "{config.launch_path}"\n' +
                               f'{script_content}')
 
         try:
@@ -92,10 +92,10 @@ class Launcher:
         """
         Launches the warp application using the provided Config.
         """
-        if config.is_starting_path_parent_process():
-            config.starting_path = Path(os.getcwd())
+        if config.is_launch_path_parent_process():
+            config.launch_path = Path(os.getcwd())
 
-        uri = f"warp://action/{config.mode.value}?path={config.starting_path}"
+        uri = f"warp://action/{config.launch_mode.value}?path={config.launch_path}"
 
         subprocess.Popen(
             ["cmd", "/c", "start", "", uri],

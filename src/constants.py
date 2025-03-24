@@ -16,4 +16,4 @@ LOG_FORMAT = "%(message)" if LOG_LEVEL == logging.DEBUG else "%(message)s"
 PARENT_PROCESS_IDENTIFIER: Final[str] = "."
 
 DEFAULT_LAUNCH_MODE: Final[LaunchMode] = LaunchMode.WINDOW
-DEFAULT_STARTING_PATH: Final[Path] = Path(PARENT_PROCESS_IDENTIFIER)
+DEFAULT_LAUNCH_PATH: Final[Path] = Path(PARENT_PROCESS_IDENTIFIER)
