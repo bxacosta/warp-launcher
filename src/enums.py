@@ -12,3 +12,10 @@ class LaunchMode(Enum):
             return cls(value)
         except ValueError:
             return None
+
+    @classmethod
+    def from_name(cls, name: str) -> Optional["LaunchMode"]:
+        try:
+            return getattr(LaunchMode, name.upper())
+        except KeyError:
+            return None

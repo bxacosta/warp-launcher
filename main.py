@@ -1,6 +1,6 @@
-def main():
-    print("Hello from warp-launcher!")
+import sys
 
+from src.cli import cli
 
 if __name__ == "__main__":
-    main()
+    sys.exit(cli())
