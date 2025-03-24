@@ -4,10 +4,13 @@ from typing import Final, Dict, Any, Optional, Tuple
 
 from src.constants import DEFAULT_LAUNCH_MODE, DEFAULT_STARTING_PATH, PARENT_PROCESS_IDENTIFIER
 from src.enums import LaunchMode
+from src.logger import setup_logger
 from src.utils import string_to_path
 
 _LAUNCH_MODE_KEY: Final[str] = "launchMode"
 _STARTING_PATH_KEY: Final[str] = "startingPath"
+
+logger = setup_logger(__name__)
 
 
 class Config:
@@ -53,7 +56,7 @@ class ConfigHandler:
             with self.config_file_path.open("r", encoding="utf-8") as config_file:
                 return Config.from_dict(json.load(config_file))
         except Exception as e:
-            print(f"Error loading configuration ({self.config_file_path}): {e}")
+            logger.error(f"Error loading configuration ({self.config_file_path}): {e}")
             return Config(DEFAULT_LAUNCH_MODE, DEFAULT_STARTING_PATH)
 
     def save_config(self, config: Config) -> Tuple[bool, Optional[str]]:
@@ -65,5 +68,5 @@ class ConfigHandler:
                 json.dump(config.to_dict(), config_file, indent=4)
             return True, None
         except IOError as e:
-            print(f"Error saving configuration '{self.config_file_path}' with content '{config.to_dict()}': {e}")
+            logger.error(f"Error saving configuration '{self.config_file_path}' with content '{config.to_dict()}': {e}")
             return False, f"Failed to save config: {e}"

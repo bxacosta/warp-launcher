@@ -2,7 +2,11 @@ import winreg
 from pathlib import Path
 from typing import Tuple, Optional, Final
 
+from src.logger import setup_logger
+
 _APP_PATHS_SUB_KEY: Final[str] = r"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths"
+
+logger = setup_logger(__name__)
 
 
 class AppPathsRegister:
@@ -33,7 +37,8 @@ class AppPathsRegister:
             winreg.CloseKey(registry_key)
             return True, None
         except Exception as e:
-            print(f"Error creating key '{self.executable_sub_key}' with value '{str(self.executable_file_path)}': {e}")
+            logger.error(
+                f"Error creating key '{self.executable_sub_key}' with value '{self.executable_file_path}': {e}")
             return False, f"Failed to register App Paths: {e}"
 
     def is_registered(self) -> bool:

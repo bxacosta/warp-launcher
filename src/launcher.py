@@ -5,7 +5,10 @@ from typing import Tuple, Optional
 
 from src.config import Config, ConfigHandler
 from src.constants import INSTALL_PATH, CONFIG_FILE_NAME, LAUNCHER_SCRIPT_NAME, COMMAND_NAME
+from src.logger import setup_logger
 from src.registry import AppPathsRegister
+
+logger = setup_logger(__name__)
 
 
 class Launcher:
@@ -81,7 +84,7 @@ class Launcher:
                 script_file.write(script_content)
             return True, None
         except IOError as e:
-            print(f"Error writing script '{self.script_file_path}' with content '{script_content}': {e}")
+            logger.error(f"Error writing script '{self.script_file_path}' with content '{script_content}': {e}")
             return False, f"Failed to write script: {e}"
 
     @staticmethod
