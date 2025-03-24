@@ -4,7 +4,7 @@ import os
 import sys
 from typing import List, Optional
 
-from src.constants import PARENT_PROCESS_IDENTIFIER, LOG_LEVEL
+from src.constants import PARENT_PROCESS_IDENTIFIER, LOG_LEVEL, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH, COMMAND_NAME
 from src.enums import LaunchMode
 from src.launcher import Launcher
 from src.logger import setup_logger
@@ -16,26 +16,29 @@ logger = setup_logger(__name__)
 def parse_cli_arguments(args: Optional[List[str]] = None) -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
+        argument_default=argparse.SUPPRESS,
         description="Warp Terminal Launcher",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
 
     parser.add_argument(
         '-m', '--mode',
-        choices=[mode.name.lower() for mode in LaunchMode],
+        default=str(DEFAULT_LAUNCH_MODE),
+        choices=[str(launch_mode) for launch_mode in LaunchMode],
         help="Select the launch mode for Warp."
     )
 
     parser.add_argument(
         '-p', '--path',
         type=str,
-        help=f"Initial path for Warp (use '{PARENT_PROCESS_IDENTIFIER}' for the current process directory)."
+        default=str(DEFAULT_LAUNCH_PATH),
+        help=f"Initial path for Warp (use '{PARENT_PROCESS_IDENTIFIER}' for parent process directory)."
     )
 
     parser.add_argument(
         '-i', '--install',
         action='store_true',
-        help="Save the configuration and create the launch script."
+        help=f"Save the configuration, create the launch script and register the '{COMMAND_NAME}' command."
     )
 
     parser.add_argument(
@@ -77,7 +80,7 @@ def cli() -> int:
             logger.error(f"Invalid mode specified: '{args.mode}'.")
             return 1
         config.launch_mode = selected_mode
-        logger.info(f"Launch mode set to '{config.launch_mode.name}'")
+        logger.info(f"Launch mode set to '{config.launch_mode}'")
 
     # Validate and set the launch path if provided
     if args.path:

@@ -17,5 +17,8 @@ class LaunchMode(Enum):
     def from_name(cls, name: str) -> Optional["LaunchMode"]:
         try:
             return getattr(LaunchMode, name.upper())
-        except KeyError:
+        except AttributeError:
             return None
+
+    def __str__(self):
+        return self.name.lower()

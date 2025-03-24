@@ -23,7 +23,7 @@ class Config:
         Convert the Config instance to a dictionary for JSON serialization.
         """
         return {
-            _LAUNCH_MODE_KEY: self.launch_mode.value,
+            _LAUNCH_MODE_KEY: str(self.launch_mode),
             _LAUNCH_PATH_KEY: str(self.launch_path),
         }
 
@@ -32,7 +32,7 @@ class Config:
         """
         Create a Config instance from a dictionary, handling defaults gracefully.
         """
-        launch_mode = LaunchMode.from_value(data.get(_LAUNCH_MODE_KEY)) or DEFAULT_LAUNCH_MODE
+        launch_mode = LaunchMode.from_name(data.get(_LAUNCH_MODE_KEY)) or DEFAULT_LAUNCH_MODE
         launch_path = string_to_path(data.get(_LAUNCH_PATH_KEY)) or DEFAULT_LAUNCH_PATH
 
         return Config(launch_mode, launch_path)

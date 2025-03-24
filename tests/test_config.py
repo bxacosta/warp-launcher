@@ -22,55 +22,54 @@ class TestConfig(unittest.TestCase):
         self.temp_dir.cleanup()
 
     def test_config_to_dict(self):
-        for mode in LaunchMode:
-            config = Config(mode, self.test_config.launch_path)
-            expected = {
-                _LAUNCH_MODE_KEY: mode.value,
+        for launch_mode_item in LaunchMode:
+            config = Config(launch_mode_item, self.test_config.launch_path)
+            expected_dict = {
+                _LAUNCH_MODE_KEY: str(launch_mode_item),
                 _LAUNCH_PATH_KEY: str(self.test_config.launch_path)
             }
-            self.assertEqual(config.to_dict(), expected)
+            self.assertEqual(config.to_dict(), expected_dict)
 
     def test_config_from_dict_with_valid_data(self):
-        for mode in LaunchMode:
-            data = {
-                _LAUNCH_MODE_KEY: mode,
+        for launch_mode_item in LaunchMode:
+            config_dict = {
+                _LAUNCH_MODE_KEY: str(launch_mode_item),
                 _LAUNCH_PATH_KEY: str(self.test_config.launch_path)
             }
-            config = Config.from_dict(data)
-            self.assertEqual(config.launch_mode, mode)
+            config = Config.from_dict(config_dict)
+            self.assertEqual(config.launch_mode, launch_mode_item)
             self.assertEqual(config.launch_path, self.test_config.launch_path)
 
     def test_config_from_dict_with_defaults(self):
-        data = {}
-        config = Config.from_dict(data)
+        config = Config.from_dict({})
         self.assertEqual(config.launch_mode, DEFAULT_LAUNCH_MODE)
         self.assertEqual(config.launch_path, DEFAULT_LAUNCH_PATH)
 
-        data = {_LAUNCH_MODE_KEY: self.test_config.launch_mode.value}
-        config = Config.from_dict(data)
+        config_dict = {_LAUNCH_MODE_KEY: str(self.test_config.launch_mode)}
+        config = Config.from_dict(config_dict)
         self.assertEqual(config.launch_mode, self.test_config.launch_mode)
         self.assertEqual(config.launch_path, DEFAULT_LAUNCH_PATH)
 
-        data = {_LAUNCH_PATH_KEY: str(self.test_config.launch_path)}
-        config = Config.from_dict(data)
+        config_dict = {_LAUNCH_PATH_KEY: str(self.test_config.launch_path)}
+        config = Config.from_dict(config_dict)
         self.assertEqual(config.launch_mode, DEFAULT_LAUNCH_MODE)
         self.assertEqual(config.launch_path, self.test_config.launch_path)
 
     def test_config_from_dict_with_invalid_config(self):
-        data = {
+        config_dict = {
             _LAUNCH_MODE_KEY: "invalid_mode",
             _LAUNCH_PATH_KEY: ""
         }
-        config = Config.from_dict(data)
+        config = Config.from_dict(config_dict)
         self.assertEqual(config.launch_mode, DEFAULT_LAUNCH_MODE)
         self.assertEqual(config.launch_path, DEFAULT_LAUNCH_PATH)
 
     def test_config_from_dict_with_invalid_types(self):
-        data = {
+        config_dict = {
             _LAUNCH_MODE_KEY: 123,
             _LAUNCH_PATH_KEY: 456
         }
-        config = Config.from_dict(data)
+        config = Config.from_dict(config_dict)
         self.assertEqual(config.launch_mode, DEFAULT_LAUNCH_MODE)
         self.assertEqual(config.launch_path, DEFAULT_LAUNCH_PATH)
 
