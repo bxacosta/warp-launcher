@@ -30,7 +30,8 @@ includes a simple CLI for managing its configuration.
     ```
 
 4. **Test if it works:**
-   > Type `warp` into the Windows Explorer address bar and press `Enter`, or execute `start warp` from the console.
+   - Type `warp` into the Windows Explorer address bar and press `Enter`.
+   - Alternatively, execute `start warp` from the console.
 
 > [!TIP]
 > Type `python main.py -h` to display the help message.
