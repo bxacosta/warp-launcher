@@ -1,8 +1,8 @@
 # Warp Launcher
 
-A tool to quickly launch the [Warp terminal](https://www.warp.dev/) for windows from your current working directory,
-either via the Windows Explorer address bar or directly from the console. It supports configurable launch modes and
-includes a simple CLI for managing its configuration.
+A tool that generates a launch script to open the [Warp terminal](https://www.warp.dev/) from the current working
+directory on Windows. It provides a simple CLI to manage configuration and supports customizable launch modes,
+enabling you to start Warp directly from the Windows Explorer address bar or from the terminal.
 
 ## Features
 
@@ -30,8 +30,8 @@ includes a simple CLI for managing its configuration.
     ```
 
 4. **Test if it works:**
-   - Type `warp` into the Windows Explorer address bar and press `Enter`.
-   - Alternatively, execute `start warp` from the console.
+    - Type `warp` into the Windows Explorer address bar and press `Enter`.
+    - Alternatively, execute `start warp` from the console.
 
 > [!TIP]
 > Type `python main.py -h` to display the help message.
