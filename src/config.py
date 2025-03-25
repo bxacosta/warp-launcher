@@ -49,29 +49,32 @@ class ConfigHandler:
         """
         Load configuration from file, or return default config if not exist or an error occurs.
         """
-        logger.debug(f"Loading configuration from: '{self.config_file_path}'")
+        logger.debug(f"Loading configuration from '{self.config_file_path}'")
+
+        default_config = Config(DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH)
         try:
             if not self.config_file_path.exists():
-                return Config(DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH)
+                logger.debug(f"Configuration file not found, using default configuration '{default_config.to_dict()}'")
+                return default_config
 
             with self.config_file_path.open("r", encoding="utf-8") as config_file:
                 config_dict = json.load(config_file)
-                logger.debug(f"Loaded configuration: {config_dict}")
+                logger.debug(f"Loaded configuration '{config_dict}'")
                 return Config.from_dict(config_dict)
         except Exception as e:
             logger.error(f"Error loading configuration from '{self.config_file_path}': {e}")
-            return Config(DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH)
+            return default_config
 
     def save_config(self, config: Config) -> Tuple[bool, Optional[str]]:
         """
         Save the provided configuration to file.
         """
-        logger.debug(f"Saving configuration to: '{self.config_file_path}'")
+        logger.debug(f"Saving configuration to '{self.config_file_path}'")
         config_dict = config.to_dict()
         try:
             with self.config_file_path.open("w", encoding="utf-8") as config_file:
                 json.dump(config_dict, config_file, indent=4)
-                logger.debug(f"Saved configuration: {config_dict}")
+                logger.debug(f"Saved configuration '{config_dict}'")
             return True, None
         except IOError as e:
             logger.error(

@@ -79,6 +79,7 @@ class Launcher:
             script_content = (f'path = "{config.launch_path}"\n' +
                               f'{script_content}')
 
+        logger.debug(f"Saving launch script to '{self.script_file_path}'")
         try:
             with self.script_file_path.open("w", encoding="utf-8") as script_file:
                 script_file.write(script_content)

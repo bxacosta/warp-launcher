@@ -101,6 +101,6 @@ def cli() -> int:
         if not success:
             logger.error(f"Failed to save configuration: {error_message}")
             return 1
-        logger.info("Configuration saved successfully")
+        logger.info(f"Configuration saved successfully '{config.to_dict()}'")
 
     return 0

@@ -18,6 +18,8 @@ class AppPathsRegister:
         """
         Registers the application in Windows App Paths Sub Key.
         """
+
+        logger.debug(f"Registering sub key '{self.executable_sub_key}'")
         try:
             registry_key = winreg.CreateKeyEx(
                 winreg.HKEY_CURRENT_USER,
@@ -26,6 +28,7 @@ class AppPathsRegister:
                 winreg.KEY_WRITE
             )
 
+            logger.debug(f"Setting registry key default value to '{self.executable_file_path}'")
             winreg.SetValueEx(
                 registry_key,
                 "",
