@@ -34,15 +34,21 @@ def parse_cli_arguments(args: Optional[List[str]] = None) -> argparse.Namespace:
     )
 
     parser.add_argument(
+        '-l', '--launch',
+        action='store_true',
+        help="Start Warp with the specified configuration."
+    )
+
+    parser.add_argument(
         '-i', '--install',
         action='store_true',
         help=f"Save the configuration, create the launch script and register the '{COMMAND_NAME}' command."
     )
 
     parser.add_argument(
-        '-l', '--launch',
+        '-u', '--uninstall',
         action='store_true',
-        help="Start Warp with the specified configuration."
+        help=f"Remove the launch script, configuration file and unregister the '{COMMAND_NAME}' command."
     )
 
     parser.add_argument(
@@ -70,6 +76,15 @@ def cli() -> int:
 
     launcher = Launcher()
     config = launcher.config_handler.load_config()
+
+    # Process uninstallation if requested
+    if getattr(args, "uninstall", False):
+        success, error_message = launcher.uninstall()
+        if not success:
+            logger.error(f"Failed to uninstall: {error_message}")
+            return 1
+        logger.info("Uninstallation completed successfully")
+        return 0
 
     # Handle launch mode parameter
     if getattr(args, "mode", None):
@@ -101,6 +116,6 @@ def cli() -> int:
         if not success:
             logger.error(f"Failed to save configuration: {error_message}")
             return 1
-        logger.info(f"Configuration saved successfully '{config.to_dict()}'")
+        logger.info(f"Installation completed successfully")
 
     return 0
