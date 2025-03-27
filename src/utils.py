@@ -8,7 +8,7 @@ from src.logger import setup_logger
 logger = setup_logger(__name__)
 
 
-def string_to_path(path_str: str) -> Optional[Path]:
+def string_to_path(path_str: Optional[str]) -> Optional[Path]:
     """
     Convert a string to a Path object if the string represents a valid path.
     """
@@ -36,19 +36,21 @@ def validate_path(path: Union[str, Path]) -> Tuple[Optional[Path], Optional[str]
     """
     logger.debug(f"Validating path: {path}")
 
+    path_object = None
     try:
         if isinstance(path, str):
-            path = string_to_path(path)
-            if not path:
-                return None, f"Path '{path}' is not valid"
+            path_object = string_to_path(path)
 
-        if not path.exists():
-            return None, f"Path '{path}' does not exist"
+        if not path_object:
+            return None, f"Path '{path}' is not valid"
 
-        if not os.access(path, os.R_OK):
-            return None, f"Path '{path}' is not accessible"
+        if not path_object.exists():
+            return None, f"Path '{path_object}' does not exist"
 
-        return path, None
+        if not os.access(path_object, os.R_OK):
+            return None, f"Path '{path_object}' is not accessible"
+
+        return path_object, None
     except Exception as error:
         logging.error(error)
         return None, f"Path '{path}' is not valid"

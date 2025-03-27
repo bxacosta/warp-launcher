@@ -14,7 +14,9 @@ class LaunchMode(Enum):
             return None
 
     @classmethod
-    def from_name(cls, name: str) -> Optional["LaunchMode"]:
+    def from_name(cls, name: Optional[str]) -> Optional["LaunchMode"]:
+        if not name: return None
+
         try:
             return getattr(LaunchMode, name.upper())
         except AttributeError:
