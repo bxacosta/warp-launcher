@@ -19,7 +19,7 @@ enabling you to start Warp directly from the Windows Explorer address bar or fro
 
 2. **Clone the Repository:**
    ```bash
-   git clone https://github.com/yourusername/warp-launcher.git
+   git clone https://github.com/bxacosta/warp-launcher.git
    cd warp-launcher
    ```
 
