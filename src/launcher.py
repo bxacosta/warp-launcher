@@ -103,7 +103,7 @@ class Launcher:
                 script_file.write(script_content)
             return True, None
         except IOError as e:
-            logger.error(f"Error writing script '{self.script_file_path}' with content '{script_content}': {e}")
+            logger.error(f"Error writing script '{self.script_file_path}': {e}")
             return False, f"Failed to write script: {e}"
 
     @staticmethod
