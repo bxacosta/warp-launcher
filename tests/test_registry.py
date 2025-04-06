@@ -39,23 +39,21 @@ class TestAppPathsRegister(unittest.TestCase):
         self.assertTrue(success)
         self.assertIsNone(error)
 
-    @patch('winreg.CreateKeyEx')
+    @patch('winreg.CreateKeyEx', side_effect=Exception('Access denied'))
     def test_register_failure(self, mock_create_key):
-        mock_create_key.side_effect = Exception('Access denied')
-
         success, error = self.app_paths_register.register()
 
+        mock_create_key.assert_called_once()
         self.assertFalse(success)
         self.assertIn('Access denied', error)
 
-    @patch('src.registry.AppPathsRegister.is_registered')
-    @patch('winreg.DeleteKey')
+    @patch('src.registry.AppPathsRegister.is_registered', return_value=True)
+    @patch('winreg.DeleteKey', side_effect=Exception('Access denied'))
     def test_unregister_failure(self, mock_delete_key, mock_is_registered):
-        mock_is_registered.return_value = True
-        mock_delete_key.side_effect = Exception('Access denied')
-
         success, error = self.app_paths_register.unregister()
 
+        mock_delete_key.assert_called_once()
+        mock_is_registered.assert_called_once()
         self.assertFalse(success)
         self.assertIn('Access denied', error)
 
@@ -76,20 +74,18 @@ class TestAppPathsRegister(unittest.TestCase):
         mock_close_key.assert_called_once_with(mock_key)
         self.assertTrue(is_registered)
 
-    @patch('winreg.OpenKey')
+    @patch('winreg.OpenKey', side_effect=FileNotFoundError())
     def test_is_registered_false_not_found(self, mock_open_key):
-        mock_open_key.side_effect = FileNotFoundError()
-
         is_registered = self.app_paths_register.is_registered()
 
+        mock_open_key.assert_called_once()
         self.assertFalse(is_registered)
 
-    @patch('winreg.OpenKey')
+    @patch('winreg.OpenKey', side_effect=Exception('Access denied'))
     def test_is_registered_false_error(self, mock_open_key):
-        mock_open_key.side_effect = Exception('Access denied')
-
         is_registered = self.app_paths_register.is_registered()
 
+        mock_open_key.assert_called_once()
         self.assertFalse(is_registered)
 
 

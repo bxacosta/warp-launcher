@@ -101,23 +101,21 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(loaded_config.launch_mode, self.test_config.launch_mode)
         self.assertEqual(loaded_config.launch_path, self.test_config.launch_path)
 
-    @mock.patch('src.config.json.dump')
+    @mock.patch('src.config.json.dump', side_effect=IOError("Permission denied"))
     def test_save_config_io_error(self, mock_class):
-        mock_class.side_effect = IOError("Permission denied")
-
         handler = ConfigHandler(self.config_file_path)
         save_result, error = handler.save_config(self.test_config)
 
+        mock_class.assert_called_once()
         self.assertFalse(save_result)
         self.assertIn("Permission denied", error)
 
-    @mock.patch('pathlib.Path.exists')
+    @mock.patch('pathlib.Path.exists', side_effect=PermissionError("Permission denied"))
     def test_load_config_with_permission_error(self, mock_class):
-        mock_class.side_effect = PermissionError("Permission denied")
-
         handler = ConfigHandler(self.config_file_path)
         config = handler.load_config()
 
+        mock_class.assert_called_once()
         self.assertEqual(config.launch_mode, DEFAULT_LAUNCH_MODE)
         self.assertEqual(config.launch_path, DEFAULT_LAUNCH_PATH)
 
