@@ -18,7 +18,7 @@ class LaunchMode(Enum):
         if not name: return None
 
         try:
-            return getattr(LaunchMode, name.upper())
+            return getattr(cls, name.upper())
         except AttributeError:
             return None
 

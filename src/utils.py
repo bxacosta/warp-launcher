@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 from pathlib import Path
 from typing import Optional, Tuple, Union
 
@@ -54,3 +55,23 @@ def validate_path(path: Union[str, Path]) -> Tuple[Optional[Path], Optional[str]
     except Exception as error:
         logging.error(error)
         return None, f"Path '{path}' is not valid"
+
+
+def validate_command_name(command_name: str) -> Tuple[Optional[str], Optional[str]]:
+    """
+    Validate that .
+    """
+    if not command_name: return None, "Command is not valid"
+
+    symbols_allowed = ['-', '_']
+    symbols_allowed_message = " or ".join(f"'{symbol}'" for symbol in symbols_allowed)
+
+    if command_name[0] in symbols_allowed or command_name[-1] in symbols_allowed:
+        return None, f"Command name '{command_name}' should not start or end with {symbols_allowed_message}"
+
+    pattern = re.compile(r"^[a-zA-Z0-9_-]+$")
+
+    if not pattern.match(command_name):
+        return None, f"Only alphanumeric characters are allowed and {symbols_allowed_message}"
+
+    return command_name, None
