@@ -1,3 +1,4 @@
+import logging
 import tempfile
 import unittest
 from pathlib import Path
@@ -7,7 +8,8 @@ from unittest import mock
 from src.config import ConfigHandler, Config, _LAUNCH_MODE_KEY, _LAUNCH_PATH_KEY, _COMMAND_NAME_KEY
 from src.constants import DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH, DEFAULT_COMMAND_NAME
 from src.enums import LaunchMode
-from src.utils import string_to_path
+
+logging.getLogger().setLevel(logging.CRITICAL)
 
 
 class TestConfig(unittest.TestCase):
@@ -15,7 +17,7 @@ class TestConfig(unittest.TestCase):
         self.temp_dir = tempfile.TemporaryDirectory()
 
         temp_path = Path(self.temp_dir.name)
-        self.test_config = Config("test_command", LaunchMode.TAB, string_to_path("/test/path"))
+        self.test_config = Config("test_command", LaunchMode.TAB, Path.home())
         self.default_config = Config(DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH)
         self.config_file_path = temp_path / "test_config.json"
 
@@ -43,56 +45,30 @@ class TestConfig(unittest.TestCase):
             expected_config = Config(self.test_config.command_name, launch_mode_item, self.test_config.launch_path)
             self.assertEqual(config, expected_config)
 
-    def test_config_from_dict_with_defaults(self):
+    def test_config_from_dict_with_invalid_config(self):
         test_cases = [
-            (
-                {},
-                DEFAULT_COMMAND_NAME,
-                DEFAULT_LAUNCH_MODE,
-                DEFAULT_LAUNCH_PATH,
-            ),
-            (
-                {_COMMAND_NAME_KEY: str(self.test_config.command_name)},
-                self.test_config.command_name,
-                DEFAULT_LAUNCH_MODE,
-                DEFAULT_LAUNCH_PATH,
-            ),
-            (
-                {_LAUNCH_MODE_KEY: str(self.test_config.launch_mode)},
-                DEFAULT_COMMAND_NAME,
-                self.test_config.launch_mode,
-                DEFAULT_LAUNCH_PATH,
-            ),
-            (
-                {_LAUNCH_PATH_KEY: str(self.test_config.launch_path)},
-                DEFAULT_COMMAND_NAME,
-                DEFAULT_LAUNCH_MODE,
-                self.test_config.launch_path,
-            )
+            {},
+            {
+                _COMMAND_NAME_KEY: "_invalid_command_name_",
+                _LAUNCH_MODE_KEY: str(self.test_config.launch_mode),
+                _LAUNCH_PATH_KEY: str(self.test_config.launch_path),
+            },
+            {
+                _COMMAND_NAME_KEY: str(self.test_config.command_name),
+                _LAUNCH_MODE_KEY: "invalid_mode",
+                _LAUNCH_PATH_KEY: str(self.test_config.launch_path),
+            },
+            {
+                _COMMAND_NAME_KEY: str(self.test_config.command_name),
+                _LAUNCH_MODE_KEY: str(self.test_config.launch_mode),
+                _LAUNCH_PATH_KEY: "<invalid_path>",
+            },
         ]
 
-        for config_dict, expected_command, expected_mode, expected_path in test_cases:
+        for config_dict in test_cases:
             with self.subTest(input=config_dict):
-                config = Config.from_dict(config_dict)
-                self.assertEqual(config.command_name, expected_command)
-                self.assertEqual(config.launch_mode, expected_mode)
-                self.assertEqual(config.launch_path, expected_path)
-
-    def test_config_from_dict_with_invalid_config(self):
-        config_dict = {
-            _LAUNCH_MODE_KEY: "invalid_mode",
-            _LAUNCH_PATH_KEY: ""
-        }
-        config = Config.from_dict(config_dict)
-        self.assertEqual(config, self.default_config)
-
-    def test_config_from_dict_with_invalid_types(self):
-        config_dict = {
-            _LAUNCH_MODE_KEY: 123,
-            _LAUNCH_PATH_KEY: 456
-        }
-        config = Config.from_dict(config_dict)
-        self.assertEqual(config, self.default_config)
+                with self.assertRaises(ValueError):
+                    Config.from_dict(config_dict)
 
     def test_load_config_non_existing_file(self):
         non_existing_config_file_path = Path("/non/existent") / "test.json"
@@ -116,8 +92,8 @@ class TestConfig(unittest.TestCase):
         self.assertTrue(save_result)
         self.assertTrue(self.config_file_path.exists())
 
-        loaded_config = handler.load_config()
-        self.assertEqual(loaded_config, self.test_config)
+        config = handler.load_config()
+        self.assertEqual(config, self.test_config)
 
     @mock.patch('src.config.json.dump', side_effect=IOError("Permission denied"))
     def test_save_config_io_error(self, mock_class):
@@ -134,8 +110,7 @@ class TestConfig(unittest.TestCase):
         config = handler.load_config()
 
         mock_class.assert_called_once()
-        self.assertEqual(config.launch_mode, DEFAULT_LAUNCH_MODE)
-        self.assertEqual(config.launch_path, DEFAULT_LAUNCH_PATH)
+        self.assertEqual(config, self.default_config)
 
 
 if __name__ == "__main__":

@@ -1,9 +1,9 @@
 import logging
 import unittest
 
-if __name__ == "__main__":
-    logging.getLogger().setLevel(logging.CRITICAL)
+logging.getLogger().setLevel(logging.CRITICAL)
 
+if __name__ == "__main__":
     loader = unittest.TestLoader()
     suite = loader.discover("tests", pattern="test*.py")
     runner = unittest.TextTestRunner(verbosity=2)
