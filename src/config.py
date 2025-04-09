@@ -1,41 +1,46 @@
 import json
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Final, Dict, Any, Optional, Tuple
 
-from src.constants import DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH, PARENT_PROCESS_IDENTIFIER
+from src.constants import DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH, PARENT_PROCESS_IDENTIFIER, DEFAULT_COMMAND_NAME
 from src.enums import LaunchMode
 from src.logger import setup_logger
 from src.utils import string_to_path
 
+_COMMAND_NAME_KEY: Final[str] = "commandName"
 _LAUNCH_MODE_KEY: Final[str] = "launchMode"
 _LAUNCH_PATH_KEY: Final[str] = "launchPath"
 
 logger = setup_logger(__name__)
 
 
+@dataclass
 class Config:
-    def __init__(self, launch_mode: LaunchMode, launch_path: Path) -> None:
-        self.launch_mode: LaunchMode = launch_mode
-        self.launch_path: Path = launch_path
+    command_name: str
+    launch_mode: LaunchMode
+    launch_path: Path
 
     def to_dict(self) -> Dict[str, Any]:
         """
         Convert the Config instance to a dictionary for JSON serialization.
         """
         return {
+            _COMMAND_NAME_KEY: self.command_name,
             _LAUNCH_MODE_KEY: str(self.launch_mode),
             _LAUNCH_PATH_KEY: str(self.launch_path),
         }
 
-    @staticmethod
-    def from_dict(data: Dict[str, Any]) -> "Config":
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "Config":
         """
         Create a Config instance from a dictionary, handling defaults gracefully.
         """
+        command_name = data.get(_COMMAND_NAME_KEY, DEFAULT_COMMAND_NAME)
         launch_mode = LaunchMode.from_name(data.get(_LAUNCH_MODE_KEY)) or DEFAULT_LAUNCH_MODE
         launch_path = string_to_path(data.get(_LAUNCH_PATH_KEY)) or DEFAULT_LAUNCH_PATH
 
-        return Config(launch_mode, launch_path)
+        return cls(command_name, launch_mode, launch_path)
 
     def is_launch_path_parent_process(self) -> bool:
         return str(self.launch_path) == PARENT_PROCESS_IDENTIFIER
@@ -51,7 +56,7 @@ class ConfigHandler:
         """
         logger.debug(f"Loading configuration from '{self.config_file_path}'")
 
-        default_config = Config(DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH)
+        default_config = Config(DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH)
         try:
             if not self.config_file_path.exists():
                 logger.debug(f"Configuration file not found, using default configuration '{default_config.to_dict()}'")
