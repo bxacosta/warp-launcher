@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Tuple, Optional
 
 from src.config import Config, ConfigHandler
-from src.constants import INSTALL_DIRECTORY, CONFIG_FILE_NAME, LAUNCHER_SCRIPT_NAME, COMMAND_NAME
+from src.constants import INSTALL_DIRECTORY, CONFIG_FILE_NAME, LAUNCHER_SCRIPT_NAME
 from src.logger import setup_logger
 from src.registry import AppPathsRegister
 
@@ -14,12 +14,10 @@ logger = setup_logger(__name__)
 
 class Launcher:
     def __init__(self,
-                 command_name: str = COMMAND_NAME,
                  install_directory: Path = INSTALL_DIRECTORY,
                  config_file_name: str = CONFIG_FILE_NAME,
                  script_file_name: str = LAUNCHER_SCRIPT_NAME):
 
-        if not command_name: raise RuntimeError("Must specify a 'command_name'")
         if not install_directory: raise RuntimeError("Must specify a 'install_path'")
         if not config_file_name: raise RuntimeError("Must specify a 'config_file_name'")
         if not script_file_name: raise RuntimeError("Must specify a 'script_file_name'")
@@ -32,7 +30,7 @@ class Launcher:
 
         # Setup registry
         self.script_file_path: Path = self.install_directory / script_file_name
-        self.app_paths_register: AppPathsRegister = AppPathsRegister(self.script_file_path, command_name)
+        self.app_paths_register: AppPathsRegister = AppPathsRegister(self.script_file_path)
 
     def install(self, config: Config) -> Tuple[bool, Optional[str]]:
         """
@@ -46,7 +44,7 @@ class Launcher:
         config_success, config_error = self.config_handler.save_config(config)
         if not config_success: return False, config_error
 
-        register_success, register_error = self.app_paths_register.register()
+        register_success, register_error = self.app_paths_register.register(config.command_name)
         if not register_success: return False, register_error
 
         return True, None
@@ -55,7 +53,9 @@ class Launcher:
         """
         Removes the installation directory and unregisters the App Paths sub key.
         """
-        unregister_success, unregister_error = self.app_paths_register.unregister()
+        config = self.config_handler.load_config()
+
+        unregister_success, unregister_error = self.app_paths_register.unregister(config.command_name)
         if not unregister_success: return False, unregister_error
 
         remove_success, remove_error = self.remove_install_directory()

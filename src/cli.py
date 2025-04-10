@@ -4,11 +4,11 @@ import os
 import sys
 from typing import List, Optional
 
-from src.constants import PARENT_PROCESS_IDENTIFIER, LOG_LEVEL, COMMAND_NAME
+from src.constants import LOG_LEVEL, DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH
 from src.enums import LaunchMode
 from src.launcher import Launcher
 from src.logger import setup_logger
-from src.utils import validate_path
+from src.utils import validate_path, validate_command_name
 
 logger = setup_logger(__name__)
 
@@ -24,13 +24,19 @@ def parse_cli_arguments(args: Optional[List[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         '-m', '--mode',
         choices=[str(launch_mode) for launch_mode in LaunchMode],
-        help="Select the launch mode for Warp."
+        help=f"Select the launch mode for Warp (default: {DEFAULT_LAUNCH_MODE})"
+    )
+
+    parser.add_argument(
+        '-c', '--command',
+        type=str,
+        help=f"The name of the command to start Warp (default: '{DEFAULT_COMMAND_NAME}')",
     )
 
     parser.add_argument(
         '-p', '--path',
         type=str,
-        help=f"Initial path for Warp (use '{PARENT_PROCESS_IDENTIFIER}' for parent process directory)."
+        help=f"Initial path for Warp (default: '{DEFAULT_LAUNCH_PATH}' for parent process directory)."
     )
 
     parser.add_argument(
@@ -42,13 +48,13 @@ def parse_cli_arguments(args: Optional[List[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         '-i', '--install',
         action='store_true',
-        help=f"Save the configuration, create the launch script and register the '{COMMAND_NAME}' command."
+        help=f"Save the configuration, create the launch script and register the command."
     )
 
     parser.add_argument(
         '-u', '--uninstall',
         action='store_true',
-        help=f"Remove the launch script, configuration file and unregister the '{COMMAND_NAME}' command."
+        help=f"Remove the launch script, configuration file and unregister the command."
     )
 
     parser.add_argument(
@@ -77,7 +83,6 @@ def cli() -> int:
     launcher = Launcher()
     config = launcher.config_handler.load_config()
 
-    # Process uninstallation if requested
     if getattr(args, "uninstall", False):
         success, error_message = launcher.uninstall()
         if not success:
@@ -86,31 +91,35 @@ def cli() -> int:
         logger.info("Uninstallation completed successfully")
         return 0
 
-    # Handle launch mode parameter
-    if getattr(args, "mode", None):
-        selected_mode = LaunchMode.from_name(args.mode)
-        if not selected_mode:
-            logger.error(f"Invalid mode specified: '{args.mode}'")
-            return 1
-        config.launch_mode = selected_mode
-        logger.info(f"Launch mode set to '{config.launch_mode}'")
-
-    # Handle launch path parameter
-    if getattr(args, "path", None):
-        valid_path, error_message = validate_path(args.path)
-        if not valid_path:
+    if getattr(args, "command", None):
+        command_name, error_message = validate_command_name(args.command)
+        if not command_name:
             logger.error(error_message)
             return 1
-        config.launch_path = valid_path
+        config.command_name = command_name
+        logger.info(f"Command name set to '{config.command_name}'")
+
+    if getattr(args, "mode", None):
+        launch_mode = LaunchMode.from_name(args.mode)
+        if not launch_mode:
+            logger.error(f"Invalid mode specified: '{args.mode}'")
+            return 1
+        config.launch_mode = launch_mode
+        logger.info(f"Launch mode set to '{config.launch_mode}'")
+
+    if getattr(args, "path", None):
+        launch_path, error_message = validate_path(args.path)
+        if not launch_path:
+            logger.error(error_message)
+            return 1
+        config.launch_path = launch_path
         logger.info(f"Launch path set to '{config.launch_path}'")
 
-    # Launch Warp if requested
     if getattr(args, "launch", False):
         launcher.launch_warp(config)
         resolved_path = os.getcwd() if config.is_launch_path_parent_process() else config.launch_path
         logger.info(f"Warp launched in '{config.launch_mode}' mode at '{resolved_path}'")
 
-    # Process installation if requested
     if getattr(args, "install", False):
         success, error_message = launcher.install(config)
         if not success:
