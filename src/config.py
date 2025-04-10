@@ -6,7 +6,7 @@ from typing import Final, Dict, Any, Optional, Tuple
 from src.constants import DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH, PARENT_PROCESS_IDENTIFIER, DEFAULT_COMMAND_NAME
 from src.enums import LaunchMode
 from src.logger import setup_logger
-from src.utils import validate_command_name, validate_path
+from src.utils import validate_command_name, validate_path, merge_dicts
 
 _COMMAND_NAME_KEY: Final[str] = "commandName"
 _LAUNCH_MODE_KEY: Final[str] = "launchMode"
@@ -68,7 +68,7 @@ class ConfigHandler:
                 return default_config
 
             with self.config_file_path.open("r", encoding="utf-8") as config_file:
-                config_dict = json.load(config_file)
+                config_dict = merge_dicts(json.load(config_file), default_config.to_dict())
                 logger.debug(f"Loaded configuration '{config_dict}'")
                 return Config.from_dict(config_dict)
         except Exception as e:

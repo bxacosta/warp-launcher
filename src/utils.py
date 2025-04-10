@@ -59,7 +59,7 @@ def validate_path(path: Union[str, Path]) -> Tuple[Optional[Path], Optional[str]
 
 def validate_command_name(command_name: str) -> Tuple[Optional[str], Optional[str]]:
     """
-    Validate that .
+    Validate the command name format.
     """
     if not command_name: return None, "Command is not valid"
 
@@ -75,3 +75,15 @@ def validate_command_name(command_name: str) -> Tuple[Optional[str], Optional[st
         return None, f"Only alphanumeric characters are allowed and {symbols_allowed_message}"
 
     return command_name, None
+
+
+def merge_dicts(dict_a: dict, dict_b: dict) -> dict:
+    """
+    Merge two dictionaries prioritizing dict_b's value if dict_a's value is not truthy
+    """
+    merged = {}
+    for key in set(dict_a) | set(dict_b):
+        a_val = dict_a.get(key)
+        b_val = dict_b.get(key)
+        merged[key] = a_val if a_val else b_val
+    return merged
