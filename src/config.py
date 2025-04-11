@@ -1,7 +1,7 @@
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Final, Dict, Any, Optional, Tuple
+from typing import Final, Dict, Any
 
 from src.constants import DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH, PARENT_PROCESS_IDENTIFIER, DEFAULT_COMMAND_NAME
 from src.enums import LaunchMode
@@ -75,7 +75,7 @@ class ConfigHandler:
             logger.error(f"Error loading configuration from '{self.config_file_path}': {e}")
             return default_config
 
-    def save_config(self, config: Config) -> Tuple[bool, Optional[str]]:
+    def save_config(self, config: Config):
         """
         Save the provided configuration to file.
         """
@@ -87,6 +87,5 @@ class ConfigHandler:
                 logger.debug(f"Saved configuration '{config_dict}'")
             return True, None
         except IOError as e:
-            logger.error(
-                f"Error saving configuration to '{self.config_file_path}' with content '{config_dict}': {e}")
-            return False, f"Failed to save config: {e}"
+            logger.error(f"Error saving configuration '{self.config_file_path}' with content '{config_dict}': {e}")
+            raise RuntimeError(f"Error saving configuration: {e}")

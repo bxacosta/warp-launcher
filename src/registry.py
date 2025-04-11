@@ -1,6 +1,6 @@
 import winreg
 from pathlib import Path
-from typing import Tuple, Optional, Final
+from typing import Final
 
 from src.logger import setup_logger
 
@@ -22,7 +22,7 @@ class AppPathsRegister:
         self.__hkey = winreg.HKEY_CURRENT_USER
         self.executable_file_path: Path = executable_file_path
 
-    def register(self, executable_name: str) -> Tuple[bool, Optional[str]]:
+    def register(self, executable_name: str):
         """
         Registers the application in Windows App Paths Subkey.
         """
@@ -47,13 +47,11 @@ class AppPathsRegister:
             )
 
             winreg.CloseKey(registry_key)
-            return True, None
         except Exception as e:
-            logger.error(
-                f"Error creating key '{subkey}' with value '{self.executable_file_path}': {e}")
-            return False, f"Failed to register App Paths: {e}"
+            logger.error(f"Error registering key '{subkey}' with value '{self.executable_file_path}': {e}")
+            raise RuntimeError(f"Error registering App Paths registry key: {e}")
 
-    def unregister(self, executable_name: str) -> Tuple[bool, Optional[str]]:
+    def unregister(self, executable_name: str):
         """
         Unregisters the application from Windows App Paths Subkey.
         """
@@ -67,10 +65,9 @@ class AppPathsRegister:
         try:
             winreg.DeleteKey(self.__hkey, subkey)
             logger.info(f"Registry key removed")
-            return True, None
         except Exception as e:
             logger.error(f"Error unregistering key '{subkey}': {e}")
-            return False, f"Failed to unregister App Paths: {e}"
+            raise RuntimeError(f"Error unregistering App Paths registry key: {e}")
 
     def is_registered(self, executable_name: str) -> bool:
         """

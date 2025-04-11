@@ -35,8 +35,6 @@ def validate_path(path: Union[str, Path]) -> Tuple[Optional[Path], Optional[str]
     """
     Validate that a path exists and is accessible.
     """
-    logger.debug(f"Validating path: {path}")
-
     path_object = None
     try:
         if isinstance(path, str):
@@ -72,7 +70,7 @@ def validate_command_name(command_name: str) -> Tuple[Optional[str], Optional[st
     pattern = re.compile(r"^[a-zA-Z0-9_-]+$")
 
     if not pattern.match(command_name):
-        return None, f"Only alphanumeric characters are allowed and {symbols_allowed_message}"
+        return None, f"Only alphanumeric characters and {symbols_allowed_message} are allowed"
 
     return command_name, None
 
