@@ -2,12 +2,14 @@ import os
 import shutil
 import subprocess
 from pathlib import Path
-from typing import Tuple, Optional
 
-from src.config import Config, ConfigHandler
+from src.config import ConfigHandler
 from src.constants import INSTALL_DIRECTORY, CONFIG_FILE_NAME, LAUNCHER_SCRIPT_NAME
+from src.enums import LaunchMode
 from src.logger import setup_logger
 from src.registry import AppPathsRegister
+from src.script import ScriptHandler
+from src.utils import validate_command_name, validate_path
 
 logger = setup_logger(__name__)
 
@@ -15,55 +17,121 @@ logger = setup_logger(__name__)
 class Launcher:
     def __init__(self,
                  install_directory: Path = INSTALL_DIRECTORY,
-                 config_file_name: str = CONFIG_FILE_NAME,
-                 script_file_name: str = LAUNCHER_SCRIPT_NAME):
+                 config_filename: str = CONFIG_FILE_NAME,
+                 script_filename: str = LAUNCHER_SCRIPT_NAME):
 
-        if not install_directory: raise RuntimeError("Must specify a 'install_path'")
-        if not config_file_name: raise RuntimeError("Must specify a 'config_file_name'")
-        if not script_file_name: raise RuntimeError("Must specify a 'script_file_name'")
+        if not install_directory: raise ValueError("Installation directory must be provided")
+        if not config_filename: raise ValueError("Configuration filename must be provided")
+        if not script_filename: raise ValueError("Script filename must be provided")
 
         self.install_directory = install_directory
+        logger.debug(f"Installation directory: {self.install_directory}")
 
-        # Setup config
-        config_file_path: Path = self.install_directory / config_file_name
-        self.config_handler: ConfigHandler = ConfigHandler(config_file_path)
+        # Setup configuration handler
+        config_file_path: Path = self.install_directory / config_filename
+        self._config_handler: ConfigHandler = ConfigHandler(config_file_path)
 
-        # Setup registry
-        self.script_file_path: Path = self.install_directory / script_file_name
-        self.app_paths_register: AppPathsRegister = AppPathsRegister(self.script_file_path)
+        # Setup script handler
+        script_file_path: Path = self.install_directory / script_filename
+        self._script_handler: ScriptHandler = ScriptHandler(script_file_path)
 
-    def install(self, config: Config) -> Tuple[bool, Optional[str]]:
+        # Setup registry for the application paths
+        self._app_paths_register: AppPathsRegister = AppPathsRegister(script_file_path)
+
+        # Load the configuration from the configuration file
+        self._config = self._config_handler.load_config()
+
+    @property
+    def command_name(self) -> str:
+        return self._config.command_name
+
+    @command_name.setter
+    def command_name(self, new_command_name: str):
+        command_name, error = validate_command_name(new_command_name)
+        if not command_name:
+            raise ValueError(error)
+        self._config.command_name = command_name
+        logger.info(f"Command name set to '{command_name}'")
+
+    @property
+    def launch_mode(self) -> LaunchMode:
+        return self._config.launch_mode
+
+    @launch_mode.setter
+    def launch_mode(self, new_launch_mode: str):
+        launch_mode = LaunchMode.from_name(new_launch_mode)
+        if not launch_mode:
+            raise ValueError(f"Invalid mode specified: '{new_launch_mode}'")
+        self._config.launch_mode = launch_mode
+        logger.info(f"Launch mode set to '{launch_mode}'")
+
+    @property
+    def launch_path(self) -> Path:
+        return self._config.launch_path
+
+    @launch_path.setter
+    def launch_path(self, new_launch_path: str):
+        path, error = validate_path(new_launch_path)
+        if not path:
+            raise ValueError(error)
+        self._config.launch_path = path
+        logger.info(f"Launch path set to '{path}'")
+
+    def launch_warp(self) -> Path:
         """
-        Persists the configuration by saving the script, config file, and create App Paths sub key.
+        Launches the warp application using the provided Config.
         """
-        self.install_directory.mkdir(exist_ok=True)
+        if self._config.is_launch_path_parent_process():
+            launch_path = Path(os.getcwd())
+        else:
+            launch_path = self._config.launch_path
 
-        script_success, script_error = self.save_script(config)
-        if not script_success: return False, script_error
+        uri = f"warp://action/{self._config.launch_mode.value}?path={launch_path}"
 
-        config_success, config_error = self.config_handler.save_config(config)
-        if not config_success: return False, config_error
+        subprocess.Popen(
+            ["cmd", "/c", "start", "", uri],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            creationflags=subprocess.DETACHED_PROCESS
+        )
 
-        register_success, register_error = self.app_paths_register.register(config.command_name)
-        if not register_success: return False, register_error
+        logger.info(f"Warp launched in '{self._config.launch_mode}' mode at '{launch_path}'")
+        return launch_path
 
-        return True, None
-
-    def uninstall(self) -> Tuple[bool, Optional[str]]:
+    def install(self):
         """
-        Removes the installation directory and unregisters the App Paths sub key.
+        Persists the configuration by saving the script, the configuration file,
+        and registering the command in the App Paths registry.
         """
-        config = self.config_handler.load_config()
+        try:
+            self.install_directory.mkdir(exist_ok=True)
 
-        unregister_success, unregister_error = self.app_paths_register.unregister(config.command_name)
-        if not unregister_success: return False, unregister_error
+            self._script_handler.save_script(self._config)
 
-        remove_success, remove_error = self.remove_install_directory()
-        if not remove_success: return False, remove_error
+            self._config_handler.save_config(self._config)
 
-        return True, None
+            self._app_paths_register.register(self._config.command_name)
+        except RuntimeError as e:
+            raise RuntimeError(f"Failed to install. {e}")
 
-    def remove_install_directory(self) -> Tuple[bool, Optional[str]]:
+        logger.info(f"Installation completed successfully")
+
+    def uninstall(self):
+        """
+        Removes the installation directory and unregisters the command from the App Paths registry.
+        """
+        try:
+            config = self._config_handler.load_config()
+
+            self._app_paths_register.unregister(config.command_name)
+
+            self._remove_install_directory()
+        except RuntimeError as e:
+            raise RuntimeError(f"Failed to uninstall. {e}")
+
+        logger.info("Uninstallation completed successfully")
+
+    def _remove_install_directory(self):
         # Remove installation directory if it exists
         logger.debug(f"Removing installation directory '{self.install_directory}'")
 
@@ -74,50 +142,6 @@ class Launcher:
         try:
             shutil.rmtree(self.install_directory)
             logger.info(f"Installation directory removed")
-            return True, None
         except Exception as e:
             logger.error(f"Error removing installation directory '{self.install_directory}': {e}")
-            return False, f"Failed to remove installation directory: {e}"
-
-    def save_script(self, config: Config) -> Tuple[bool, Optional[str]]:
-        """
-        Creates or updates the .vbs launcher script in the installation directory.
-        """
-        logger.debug(f"Saving launch script to '{self.script_file_path}'")
-
-        script_content = (
-                'If Right(path, 1) = "\\" Then path = Left(path, Len(path) - 1) End If\n' +
-                # 'WScript.Echo "Path: " & path\n' +
-                f'warpURI = "warp://action/{config.launch_mode.value}?path=" & path\n' +
-                'CreateObject("WScript.Shell").Run warpURI, 0, False')
-
-        if config.is_launch_path_parent_process():
-            script_content = (f'path = CreateObject("Scripting.FileSystemObject").GetAbsolutePathName(".")\n' +
-                              f'{script_content}')
-        else:
-            script_content = (f'path = "{config.launch_path}"\n' +
-                              f'{script_content}')
-
-        try:
-            with self.script_file_path.open("w", encoding="utf-8") as script_file:
-                script_file.write(script_content)
-            return True, None
-        except IOError as e:
-            logger.error(f"Error writing script '{self.script_file_path}': {e}")
-            return False, f"Failed to write script: {e}"
-
-    @staticmethod
-    def launch_warp(config: Config):
-        """
-        Launches the warp application using the provided Config.
-        """
-        if config.is_launch_path_parent_process(): config.launch_path = Path(os.getcwd())
-
-        uri = f"warp://action/{config.launch_mode.value}?path={config.launch_path}"
-
-        subprocess.Popen(
-            ["cmd", "/c", "start", "", uri],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            creationflags=subprocess.DETACHED_PROCESS
-        )
+            raise RuntimeError(f"Error removing installation directory: {e}")
