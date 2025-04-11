@@ -85,6 +85,13 @@ class TestConfig(unittest.TestCase):
 
         self.assertEqual(config, self.default_config)
 
+    def test_load_config_missing_fields(self):
+        self.config_file_path.write_text(f'"{_LAUNCH_MODE_KEY}": "{self.default_config.launch_mode}"', encoding="utf-8")
+        handler = ConfigHandler(self.config_file_path)
+        config = handler.load_config()
+
+        self.assertEqual(config, self.default_config)
+
     def test_save_and_load_config(self):
         handler = ConfigHandler(self.config_file_path)
         save_result, _ = handler.save_config(self.test_config)
@@ -98,11 +105,11 @@ class TestConfig(unittest.TestCase):
     @mock.patch('src.config.json.dump', side_effect=IOError("Permission denied"))
     def test_save_config_io_error(self, mock_class):
         handler = ConfigHandler(self.config_file_path)
-        save_result, error = handler.save_config(self.test_config)
+
+        with self.assertRaises(RuntimeError):
+            handler.save_config(self.test_config)
 
         mock_class.assert_called_once()
-        self.assertFalse(save_result)
-        self.assertIn("Permission denied", error)
 
     @mock.patch('pathlib.Path.exists', side_effect=PermissionError("Permission denied"))
     def test_load_config_with_permission_error(self, mock_class):
