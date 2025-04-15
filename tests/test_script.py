@@ -13,7 +13,7 @@ class TestScriptHandler(unittest.TestCase):
         self.test_script_path = Path("test_script.vbs")
         self.script_handler = ScriptHandler(self.test_script_path)
         self.test_launch_mode = LaunchMode.TAB
-        self.test_launch_path = Path("/test/path")
+        self.test_launch_path = Path(r"C:\test\path")
         self.test_config = Config("test-command", self.test_launch_mode, self.test_launch_path)
 
     @patch('pathlib.Path.open', new_callable=mock_open)

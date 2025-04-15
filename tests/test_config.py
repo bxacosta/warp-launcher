@@ -2,7 +2,7 @@ import logging
 import tempfile
 import unittest
 from pathlib import Path
-from unittest import mock
+from unittest.mock import patch
 
 # noinspection PyProtectedMember
 from src.config import ConfigHandler, Config, _LAUNCH_MODE_KEY, _LAUNCH_PATH_KEY, _COMMAND_NAME_KEY
@@ -102,7 +102,7 @@ class TestConfig(unittest.TestCase):
         config = handler.load_config()
         self.assertEqual(config, self.test_config)
 
-    @mock.patch('src.config.json.dump', side_effect=IOError("Permission denied"))
+    @patch('src.config.json.dump', side_effect=IOError("Permission denied"))
     def test_save_config_io_error(self, mock_class):
         handler = ConfigHandler(self.config_file_path)
 
@@ -111,7 +111,7 @@ class TestConfig(unittest.TestCase):
 
         mock_class.assert_called_once()
 
-    @mock.patch('pathlib.Path.exists', side_effect=PermissionError("Permission denied"))
+    @patch('pathlib.Path.exists', side_effect=PermissionError("Permission denied"))
     def test_load_config_with_permission_error(self, mock_class):
         handler = ConfigHandler(self.config_file_path)
         config = handler.load_config()
