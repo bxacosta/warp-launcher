@@ -31,7 +31,7 @@ def string_to_path(path_str: Optional[str]) -> Optional[Path]:
         return None
 
 
-def validate_path(path: Union[str, Path]) -> Tuple[Optional[Path], Optional[str]]:
+def validate_path(path: Optional[Union[str, Path]]) -> Tuple[Optional[Path], Optional[str]]:
     """
     Validate that a path exists and is accessible.
     """
@@ -55,7 +55,7 @@ def validate_path(path: Union[str, Path]) -> Tuple[Optional[Path], Optional[str]
         return None, f"Path '{path}' is not valid"
 
 
-def validate_command_name(command_name: str) -> Tuple[Optional[str], Optional[str]]:
+def validate_command_name(command_name: Optional[str]) -> Tuple[Optional[str], Optional[str]]:
     """
     Validate the command name format.
     """
