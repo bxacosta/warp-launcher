@@ -44,7 +44,7 @@ warp-launcher/
 │   ├── config.py        # User configuration management
 │   ├── constants.py     # Global project constants
 │   ├── enums.py         # Launch mode enumerations
-│   ├── launcher.py      # Core functionalities to launch Warp
+│   ├── launcher.py      # Core functionalities for installation and configuration
 │   ├── logger.py        # Logging system configuration
 │   ├── registry.py      # Windows registry integration
 │   ├── script.py        # Script generation and handling
@@ -54,6 +54,31 @@ warp-launcher/
 └── pyproject.toml       # Project configuration file
 
 ```
+
+## Development
+
+> [!NOTE]
+> This project uses [uv](https://docs.astral.sh/uv/) as the package manager.
+
+### Running Tests
+
+To run all unit tests, execute the `tests.py` file:
+
+```bash
+uv run tests.py
+```
+
+This will discover and run all test files in the `tests` directory that match the pattern `test*.py`.
+
+### Type Checking
+
+To run static type checking with [mypy](https://mypy.readthedocs.io/en/stable/), execute:
+
+```bash
+uv run mypy src
+```
+
+This will validate type annotations across the project's source code files.
 
 ## How it Works
 
