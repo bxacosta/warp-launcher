@@ -111,7 +111,7 @@ class Launcher:
             self._config_handler.save_config(self._config)
 
             self._app_paths_register.register(self._config.command_name)
-        except RuntimeError as e:
+        except (RuntimeError, OSError) as e:
             raise RuntimeError(f"Failed to install. {e}")
 
         logger.info(f"Installation completed successfully")
@@ -142,6 +142,6 @@ class Launcher:
         try:
             shutil.rmtree(self.install_directory)
             logger.info(f"Installation directory removed")
-        except Exception as e:
+        except OSError as e:
             logger.error(f"Error removing installation directory '{self.install_directory}': {e}")
             raise RuntimeError(f"Error removing installation directory: {e}")
