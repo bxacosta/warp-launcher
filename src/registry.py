@@ -18,7 +18,7 @@ def _build_app_paths_subkey(executable_name: str) -> str:
 
 
 class AppPathsRegister:
-    def __init__(self, executable_file_path: Path) -> None:
+    def __init__(self, executable_file_path: Path):
         self.__hkey = winreg.HKEY_CURRENT_USER
         self.executable_file_path: Path = executable_file_path
 
@@ -58,7 +58,7 @@ class AppPathsRegister:
         subkey = _build_app_paths_subkey(executable_name)
 
         logger.debug(f"Removing key '{subkey}' from '{_HKEY_NAME}'")
-        if not self.is_registered():
+        if not self.is_registered(executable_name):
             logger.info("Key is not registered")
             return True, None
 
