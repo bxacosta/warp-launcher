@@ -1,6 +1,7 @@
 import argparse
 import logging
 import sys
+from pathlib import Path
 from typing import List, Optional
 
 from src.constants import LOG_LEVEL, DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH
@@ -33,7 +34,7 @@ def parse_cli_arguments(args: Optional[List[str]] = None) -> argparse.Namespace:
 
     parser.add_argument(
         '-p', '--path',
-        type=str,
+        type=Path,
         help=f"Initial path for Warp (default: '{DEFAULT_LAUNCH_PATH}' for parent process directory)."
     )
 
