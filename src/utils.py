@@ -2,14 +2,13 @@ import logging
 import os
 import re
 from pathlib import Path
-from typing import Optional, Tuple, Union
 
 from src.logger import setup_logger
 
 logger = setup_logger(__name__)
 
 
-def string_to_path(path_str: Optional[str]) -> Optional[Path]:
+def string_to_path(path_str: str | None) -> Path | None:
     """
     Convert a string to a Path object if the string represents a valid path.
     """
@@ -31,7 +30,7 @@ def string_to_path(path_str: Optional[str]) -> Optional[Path]:
         return None
 
 
-def validate_path(path: Optional[Union[str, Path]]) -> Tuple[Optional[Path], Optional[str]]:
+def validate_path(path: str | Path | None) -> tuple[Path | None, str | None]:
     """
     Validate that a path exists and is accessible.
     """
@@ -55,7 +54,7 @@ def validate_path(path: Optional[Union[str, Path]]) -> Tuple[Optional[Path], Opt
         return None, f"Path '{path}' is not valid"
 
 
-def validate_command_name(command_name: Optional[str]) -> Tuple[Optional[str], Optional[str]]:
+def validate_command_name(command_name: str | None) -> tuple[str | None, str | None]:
     """
     Validate the command name format.
     """

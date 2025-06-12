@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 from enum import Enum
-from typing import Optional
 
 
 class LaunchMode(Enum):
@@ -7,14 +8,14 @@ class LaunchMode(Enum):
     TAB = "new_tab"
 
     @classmethod
-    def from_value(cls, value: str) -> Optional["LaunchMode"]:
+    def from_value(cls, value: str) -> LaunchMode | None:
         try:
             return cls(value)
         except ValueError:
             return None
 
     @classmethod
-    def from_name(cls, name: Optional[str]) -> Optional["LaunchMode"]:
+    def from_name(cls, name: str | None) -> LaunchMode | None:
         if not name: return None
 
         try:

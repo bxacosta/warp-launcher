@@ -1,7 +1,7 @@
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Final, Dict, Any
+from typing import Final, Any
 
 from src.constants import DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH, PARENT_PROCESS_IDENTIFIER, DEFAULT_COMMAND_NAME
 from src.enums import LaunchMode
@@ -21,7 +21,7 @@ class Config:
     launch_mode: LaunchMode
     launch_path: Path
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, str]:
         """
         Convert the Config instance to a dictionary for JSON serialization.
         """
@@ -32,7 +32,7 @@ class Config:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "Config":
+    def from_dict(cls, data: dict[str, Any]) -> "Config":
         """
         Create a Config instance from a dictionary, raise ValueError if a value is invalid.
         """

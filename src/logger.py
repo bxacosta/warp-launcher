@@ -1,6 +1,5 @@
 import logging
 import sys
-from typing import Optional
 
 from src.constants import LOG_FORMAT
 
@@ -27,7 +26,7 @@ class ColorFormatter(logging.Formatter):
         return f"{color}{message}{_DEFAULT}"
 
 
-def setup_logger(name: Optional[str] = None, level: int = logging.NOTSET) -> logging.Logger:
+def setup_logger(name: str | None = None, level: int = logging.NOTSET) -> logging.Logger:
     """Configure console logger."""
 
     logger = logging.getLogger(name or __name__)

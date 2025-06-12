@@ -2,7 +2,6 @@ import argparse
 import logging
 import sys
 from pathlib import Path
-from typing import List, Optional
 
 from src.constants import LOG_LEVEL, DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH
 from src.enums import LaunchMode
@@ -12,7 +11,7 @@ from src.logger import setup_logger
 logger = setup_logger(__name__)
 
 
-def parse_cli_arguments(args: Optional[List[str]] = None) -> argparse.Namespace:
+def parse_cli_arguments(args: list[str] | None = None) -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
         argument_default=argparse.SUPPRESS,
