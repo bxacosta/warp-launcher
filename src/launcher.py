@@ -104,6 +104,11 @@ class Launcher:
         and registering the command in the App Paths registry.
         """
         try:
+            previous_command_name = self._config_handler.load_config().command_name
+            is_previous_command_registered = self._app_paths_register.is_registered(previous_command_name)
+            if previous_command_name != self._config.command_name and is_previous_command_registered:
+                self._app_paths_register.unregister(previous_command_name)
+
             self.install_directory.mkdir(exist_ok=True)
 
             self._script_handler.save_script(self._config)
