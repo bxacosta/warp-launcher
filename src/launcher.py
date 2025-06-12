@@ -114,7 +114,7 @@ class Launcher:
         except (RuntimeError, OSError) as e:
             raise RuntimeError(f"Failed to install. {e}")
 
-        logger.info(f"Installation completed successfully")
+        logger.info(f"Installation completed successfully, type 'start {self.command_name}' to open")
 
     def uninstall(self):
         """

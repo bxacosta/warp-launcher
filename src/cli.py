@@ -58,7 +58,7 @@ def parse_cli_arguments(args: list[str] | None = None) -> argparse.Namespace:
     action_group.add_argument(
         "-u", "--uninstall",
         action="store_true",
-        help=f"Save the configuration, create the launch script and register the command."
+        help=f"Unregister the command and remove the installation directory."
     )
 
     # Use command-line args if not provided
