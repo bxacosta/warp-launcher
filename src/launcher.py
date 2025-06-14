@@ -4,7 +4,7 @@ import subprocess
 from pathlib import Path
 
 from src.config import ConfigHandler
-from src.constants import INSTALL_DIRECTORY, CONFIG_FILE_NAME, LAUNCHER_SCRIPT_NAME
+from src.constants import CONFIG_FILE_NAME, INSTALL_DIRECTORY, LAUNCHER_SCRIPT_NAME
 from src.enums import LaunchMode
 from src.logger import setup_logger
 from src.registry import AppPathsRegister
@@ -15,14 +15,18 @@ logger = setup_logger(__name__)
 
 
 class Launcher:
-    def __init__(self,
-                 install_directory: Path = INSTALL_DIRECTORY,
-                 config_filename: str = CONFIG_FILE_NAME,
-                 script_filename: str = LAUNCHER_SCRIPT_NAME):
-
-        if not install_directory: raise ValueError("Installation directory must be provided")
-        if not config_filename: raise ValueError("Configuration filename must be provided")
-        if not script_filename: raise ValueError("Script filename must be provided")
+    def __init__(
+        self,
+        install_directory: Path = INSTALL_DIRECTORY,
+        config_filename: str = CONFIG_FILE_NAME,
+        script_filename: str = LAUNCHER_SCRIPT_NAME,
+    ):
+        if not install_directory:
+            raise ValueError("Installation directory must be provided")
+        if not config_filename:
+            raise ValueError("Configuration filename must be provided")
+        if not script_filename:
+            raise ValueError("Script filename must be provided")
 
         self.install_directory = install_directory
         logger.debug(f"Installation directory: {self.install_directory}")
@@ -92,7 +96,7 @@ class Launcher:
             ["cmd", "/c", "start", "", uri],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
-            creationflags=subprocess.DETACHED_PROCESS
+            creationflags=subprocess.DETACHED_PROCESS,
         )
 
         logger.info(f"Warp launched in '{self._config.launch_mode}' mode at '{launch_path}'")

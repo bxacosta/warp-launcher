@@ -16,7 +16,8 @@ class LaunchMode(Enum):
 
     @classmethod
     def from_name(cls, name: str | None) -> LaunchMode | None:
-        if not name: return None
+        if not name:
+            return None
 
         try:
             return getattr(cls, name.upper())

@@ -5,8 +5,8 @@ from pathlib import Path
 from unittest.mock import patch
 
 # noinspection PyProtectedMember
-from src.config import ConfigHandler, Config, _LAUNCH_MODE_KEY, _LAUNCH_PATH_KEY, _COMMAND_NAME_KEY
-from src.constants import DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH, DEFAULT_COMMAND_NAME
+from src.config import _COMMAND_NAME_KEY, _LAUNCH_MODE_KEY, _LAUNCH_PATH_KEY, Config, ConfigHandler
+from src.constants import DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH
 from src.enums import LaunchMode
 
 logging.getLogger().setLevel(logging.CRITICAL)
@@ -30,7 +30,7 @@ class TestConfig(unittest.TestCase):
             expected_dict = {
                 _COMMAND_NAME_KEY: self.test_config.command_name,
                 _LAUNCH_MODE_KEY: str(launch_mode_item),
-                _LAUNCH_PATH_KEY: str(self.test_config.launch_path)
+                _LAUNCH_PATH_KEY: str(self.test_config.launch_path),
             }
             self.assertEqual(config.to_dict(), expected_dict)
 
@@ -39,7 +39,7 @@ class TestConfig(unittest.TestCase):
             config_dict = {
                 _COMMAND_NAME_KEY: self.test_config.command_name,
                 _LAUNCH_MODE_KEY: str(launch_mode_item),
-                _LAUNCH_PATH_KEY: str(self.test_config.launch_path)
+                _LAUNCH_PATH_KEY: str(self.test_config.launch_path),
             }
             config = Config.from_dict(config_dict)
             expected_config = Config(self.test_config.command_name, launch_mode_item, self.test_config.launch_path)
@@ -102,7 +102,7 @@ class TestConfig(unittest.TestCase):
         config = handler.load_config()
         self.assertEqual(config, self.test_config)
 
-    @patch('src.config.json.dump', side_effect=IOError("Permission denied"))
+    @patch("src.config.json.dump", side_effect=IOError("Permission denied"))
     def test_save_config_io_error(self, mock_class):
         handler = ConfigHandler(self.config_file_path)
 
@@ -111,7 +111,7 @@ class TestConfig(unittest.TestCase):
 
         mock_class.assert_called_once()
 
-    @patch('pathlib.Path.exists', side_effect=PermissionError("Permission denied"))
+    @patch("pathlib.Path.exists", side_effect=PermissionError("Permission denied"))
     def test_load_config_with_permission_error(self, mock_class):
         handler = ConfigHandler(self.config_file_path)
         config = handler.load_config()

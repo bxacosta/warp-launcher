@@ -1,6 +1,6 @@
 import unittest
 from pathlib import Path
-from unittest.mock import patch, mock_open
+from unittest.mock import mock_open, patch
 
 from src.config import Config
 from src.constants import PARENT_PROCESS_IDENTIFIER
@@ -16,7 +16,7 @@ class TestScriptHandler(unittest.TestCase):
         self.test_launch_path = Path(r"C:\test\path")
         self.test_config = Config("test-command", self.test_launch_mode, self.test_launch_path)
 
-    @patch('pathlib.Path.open', new_callable=mock_open)
+    @patch("pathlib.Path.open", new_callable=mock_open)
     def test_save_script_with_regular_path(self, mock_file):
         self.script_handler.save_script(self.test_config)
 
@@ -24,11 +24,11 @@ class TestScriptHandler(unittest.TestCase):
         handle = mock_file()
 
         write_calls = handle.write.call_args_list
-        script_content = ''.join(call[0][0] for call in write_calls)
+        script_content = "".join(call[0][0] for call in write_calls)
 
         self.assertIn(f'path = "{self.test_launch_path}"', script_content)
 
-    @patch('pathlib.Path.open', new_callable=mock_open)
+    @patch("pathlib.Path.open", new_callable=mock_open)
     def test_save_script_with_parent_process_path(self, mock_file):
         config = Config("test-command", self.test_launch_mode, Path(PARENT_PROCESS_IDENTIFIER))
 
@@ -38,11 +38,11 @@ class TestScriptHandler(unittest.TestCase):
         handle = mock_file()
 
         write_calls = handle.write.call_args_list
-        script_content = ''.join(call[0][0] for call in write_calls)
+        script_content = "".join(call[0][0] for call in write_calls)
 
         self.assertIn('path = CreateObject("Scripting.FileSystemObject").GetAbsolutePathName(".")', script_content)
 
-    @patch('pathlib.Path.open', side_effect=OSError("Access denied"))
+    @patch("pathlib.Path.open", side_effect=OSError("Access denied"))
     def test_save_script_handles_file_error(self, mock_file):
         with self.assertRaises(RuntimeError) as context:
             self.script_handler.save_script(self.test_config)
@@ -51,5 +51,5 @@ class TestScriptHandler(unittest.TestCase):
         mock_file.assert_called_once_with("w", encoding="utf-8")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

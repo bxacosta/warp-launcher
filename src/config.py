@@ -1,12 +1,12 @@
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Final, Any
+from typing import Any, Final
 
-from src.constants import DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH, PARENT_PROCESS_IDENTIFIER, DEFAULT_COMMAND_NAME
+from src.constants import DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH, PARENT_PROCESS_IDENTIFIER
 from src.enums import LaunchMode
 from src.logger import setup_logger
-from src.utils import validate_command_name, validate_path, merge_dicts
+from src.utils import merge_dicts, validate_command_name, validate_path
 
 _COMMAND_NAME_KEY: Final[str] = "commandName"
 _LAUNCH_MODE_KEY: Final[str] = "launchMode"
@@ -37,13 +37,16 @@ class Config:
         Create a Config instance from a dictionary, raise ValueError if a value is invalid.
         """
         command_name, command_name_error = validate_command_name(data.get(_COMMAND_NAME_KEY))
-        if not command_name: raise ValueError(command_name_error)
+        if not command_name:
+            raise ValueError(command_name_error)
 
         launch_mode = LaunchMode.from_name(data.get(_LAUNCH_MODE_KEY))
-        if not launch_mode: raise ValueError(f"Invalid launch mode: '{data.get(_LAUNCH_MODE_KEY)}'")
+        if not launch_mode:
+            raise ValueError(f"Invalid launch mode: '{data.get(_LAUNCH_MODE_KEY)}'")
 
         launch_path, launch_path_error = validate_path(data.get(_LAUNCH_PATH_KEY))
-        if not launch_path: raise ValueError(launch_path_error)
+        if not launch_path:
+            raise ValueError(launch_path_error)
 
         return cls(command_name, launch_mode, launch_path)
 

@@ -12,7 +12,6 @@ logging.getLogger().setLevel(logging.CRITICAL)
 
 
 class TestLauncher(unittest.TestCase):
-
     def setUp(self):
         self.test_command_name = "test-command"
         self.test_launch_mode = LaunchMode.TAB
@@ -20,7 +19,7 @@ class TestLauncher(unittest.TestCase):
         self.test_config = Config(self.test_command_name, self.test_launch_mode, self.test_launch_path)
 
         # Patches ConfigHandler.load_config to not read from disk
-        patcher = patch('src.config.ConfigHandler.load_config', return_value=self.test_config)
+        patcher = patch("src.config.ConfigHandler.load_config", return_value=self.test_config)
         self.addCleanup(patcher.stop)
         self.mock_load_config = patcher.start()
 
@@ -47,7 +46,7 @@ class TestLauncher(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.test_launcher.launch_path = r"C:\Invalid\Path"
 
-    @patch('src.launcher.Path.mkdir', side_effect=PermissionError("Access denied"))
+    @patch("src.launcher.Path.mkdir", side_effect=PermissionError("Access denied"))
     def test_create_install_directory_raises_error(self, mock_mkdir):
         with self.assertRaises(RuntimeError) as context:
             self.test_launcher.install()
@@ -55,10 +54,10 @@ class TestLauncher(unittest.TestCase):
         mock_mkdir.assert_called_once()
         self.assertIn("Failed to install", str(context.exception))
 
-    @patch('src.registry.AppPathsRegister.register', return_value=None)
-    @patch('src.config.ConfigHandler.save_config', return_value=None)
-    @patch('src.script.ScriptHandler.save_script', return_value=None)
-    @patch('src.launcher.Path.mkdir')
+    @patch("src.registry.AppPathsRegister.register", return_value=None)
+    @patch("src.config.ConfigHandler.save_config", return_value=None)
+    @patch("src.script.ScriptHandler.save_script", return_value=None)
+    @patch("src.launcher.Path.mkdir")
     def test_install_success(self, mock_mkdir, mock_save_script, mock_save_config, mock_register):
         self.test_launcher.install()
 
@@ -67,9 +66,9 @@ class TestLauncher(unittest.TestCase):
         mock_save_config.assert_called_once_with(self.test_config)
         mock_register.assert_called_once_with(self.test_config.command_name)
 
-    @patch('shutil.rmtree')
-    @patch('src.registry.AppPathsRegister.unregister')
-    @patch('pathlib.Path.exists', return_value=True)
+    @patch("shutil.rmtree")
+    @patch("src.registry.AppPathsRegister.unregister")
+    @patch("pathlib.Path.exists", return_value=True)
     def test_uninstall_success(self, mock_exists, mock_unregister, mock_rmtree):
         self.test_launcher.uninstall()
 
@@ -77,9 +76,9 @@ class TestLauncher(unittest.TestCase):
         mock_exists.assert_called_once()
         mock_rmtree.assert_called_once_with(self.test_install_dir)
 
-    @patch('shutil.rmtree', side_effect=PermissionError("Unregister error"))
-    @patch('src.registry.AppPathsRegister.unregister')
-    @patch('pathlib.Path.exists', return_value=True)
+    @patch("shutil.rmtree", side_effect=PermissionError("Unregister error"))
+    @patch("src.registry.AppPathsRegister.unregister")
+    @patch("pathlib.Path.exists", return_value=True)
     def test_uninstall_failure(self, mock_exists, mock_unregister, mock_rmtree):
         with self.assertRaises(RuntimeError) as context:
             self.test_launcher.uninstall()
@@ -89,7 +88,7 @@ class TestLauncher(unittest.TestCase):
         mock_rmtree.assert_called_once_with(self.test_install_dir)
         self.assertIn("Failed to uninstall", str(context.exception))
 
-    @patch('subprocess.Popen')
+    @patch("subprocess.Popen")
     def test_launch_warp(self, mock_popen):
         self.test_launcher._config.is_launch_path_parent_process = lambda: False
         expected_uri = f"warp://action/{self.test_config.launch_mode.value}?path={self.test_config.launch_path}"
@@ -100,9 +99,9 @@ class TestLauncher(unittest.TestCase):
             expected_command,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
-            creationflags=subprocess.DETACHED_PROCESS
+            creationflags=subprocess.DETACHED_PROCESS,
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

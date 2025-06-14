@@ -15,11 +15,11 @@ def string_to_path(path_str: str | None) -> Path | None:
     if not isinstance(path_str, str) or not path_str.strip():
         return None
 
-    invalid_chars = ['<', '>', '"', '|', '?', '*']
+    invalid_chars = ["<", ">", '"', "|", "?", "*"]
     if any(char in str(path_str) for char in invalid_chars):
         return None
 
-    colon_positions = [i for i, char in enumerate(path_str) if char == ':']
+    colon_positions = [i for i, char in enumerate(path_str) if char == ":"]
     if colon_positions and not (len(colon_positions) == 1 and colon_positions[0] == 1):
         return None
 
@@ -58,9 +58,10 @@ def validate_command_name(command_name: str | None) -> tuple[str | None, str | N
     """
     Validate the command name format.
     """
-    if not command_name: return None, "Command is not valid"
+    if not command_name:
+        return None, "Command is not valid"
 
-    symbols_allowed = ['-', '_']
+    symbols_allowed = ["-", "_"]
     symbols_allowed_message = " or ".join(f"'{symbol}'" for symbol in symbols_allowed)
 
     if command_name[0] in symbols_allowed or command_name[-1] in symbols_allowed:

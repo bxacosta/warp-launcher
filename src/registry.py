@@ -31,20 +31,10 @@ class AppPathsRegister:
         logger.debug(f"Registering key '{subkey}' in '{_HKEY_NAME}'")
 
         try:
-            registry_key = winreg.CreateKeyEx(
-                self.__hkey,
-                subkey,
-                access=winreg.KEY_WRITE
-            )
+            registry_key = winreg.CreateKeyEx(self.__hkey, subkey, access=winreg.KEY_WRITE)
 
             logger.debug(f"Setting key default value to '{self.executable_file_path}'")
-            winreg.SetValueEx(
-                registry_key,
-                "",
-                0,
-                winreg.REG_SZ,
-                str(self.executable_file_path)
-            )
+            winreg.SetValueEx(registry_key, "", 0, winreg.REG_SZ, str(self.executable_file_path))
 
             winreg.CloseKey(registry_key)
         except Exception as e:
@@ -76,11 +66,7 @@ class AppPathsRegister:
         subkey = _build_app_paths_subkey(executable_name)
 
         try:
-            registry_key = winreg.OpenKey(
-                self.__hkey,
-                subkey,
-                access=winreg.KEY_READ
-            )
+            registry_key = winreg.OpenKey(self.__hkey, subkey, access=winreg.KEY_READ)
             winreg.CloseKey(registry_key)
             return True
         except FileNotFoundError:

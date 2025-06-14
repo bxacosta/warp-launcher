@@ -3,7 +3,7 @@ import logging
 import sys
 from pathlib import Path
 
-from src.constants import LOG_LEVEL, DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH
+from src.constants import DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH, LOG_LEVEL
 from src.enums import LaunchMode
 from src.launcher import Launcher
 from src.logger import setup_logger
@@ -16,49 +16,43 @@ def parse_cli_arguments(args: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         argument_default=argparse.SUPPRESS,
         description="Warp Terminal Launcher",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
 
     parser.add_argument(
-        '-m', '--mode',
+        "-m",
+        "--mode",
         choices=[str(launch_mode) for launch_mode in LaunchMode],
-        help=f"Select the launch mode for Warp (default: {DEFAULT_LAUNCH_MODE})"
+        help=f"Select the launch mode for Warp (default: {DEFAULT_LAUNCH_MODE})",
     )
 
     parser.add_argument(
-        '-c', '--command',
+        "-c",
+        "--command",
         type=str,
         help=f"The name of the command to start Warp (default: '{DEFAULT_COMMAND_NAME}')",
     )
 
     parser.add_argument(
-        '-p', '--path',
+        "-p",
+        "--path",
         type=Path,
-        help=f"Initial path for Warp (default: '{DEFAULT_LAUNCH_PATH}' for parent process directory)."
+        help=f"Initial path for Warp (default: '{DEFAULT_LAUNCH_PATH}' for parent process directory).",
     )
 
-    parser.add_argument(
-        '-l', '--launch',
-        action='store_true',
-        help="Start Warp with the specified configuration."
-    )
+    parser.add_argument("-l", "--launch", action="store_true", help="Start Warp with the specified configuration.")
 
-    parser.add_argument(
-        '-v', '--verbose',
-        action='store_true',
-        help="Enable verbose logging."
-    )
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose logging.")
 
     action_group = parser.add_mutually_exclusive_group()
     action_group.add_argument(
-        "-i", "--install",
+        "-i",
+        "--install",
         action="store_true",
-        help=f"Save the configuration, create the launch script and register the command."
+        help="Save the configuration, create the launch script and register the command.",
     )
     action_group.add_argument(
-        "-u", "--uninstall",
-        action="store_true",
-        help=f"Unregister the command and remove the installation directory."
+        "-u", "--uninstall", action="store_true", help="Unregister the command and remove the installation directory."
     )
 
     # Use command-line args if not provided
