@@ -39,7 +39,7 @@ class AppPathsRegister:
             winreg.CloseKey(registry_key)
         except Exception as e:
             logger.error(f"Error registering key '{subkey}' with value '{self.executable_file_path}': {e}")
-            raise RuntimeError(f"Error registering App Paths registry key: {e}")
+            raise RuntimeError(f"Error registering App Paths registry key: {e}") from e
 
     def unregister(self, executable_name: str):
         """
@@ -54,10 +54,10 @@ class AppPathsRegister:
 
         try:
             winreg.DeleteKey(self.__hkey, subkey)
-            logger.info(f"Registry key removed")
+            logger.info("Registry key removed")
         except Exception as e:
             logger.error(f"Error unregistering key '{subkey}': {e}")
-            raise RuntimeError(f"Error unregistering App Paths registry key: {e}")
+            raise RuntimeError(f"Error unregistering App Paths registry key: {e}") from e
 
     def is_registered(self, executable_name: str) -> bool:
         """

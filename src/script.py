@@ -34,4 +34,4 @@ class ScriptHandler:
                 script_file.write(script_content)
         except OSError as e:
             logger.error(f"Error writing script '{self._script_file_path}': {e}")
-            raise RuntimeError(f"Error writing script: {e}")
+            raise RuntimeError(f"Error writing script: {e}") from e

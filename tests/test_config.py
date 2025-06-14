@@ -66,9 +66,8 @@ class TestConfig(unittest.TestCase):
         ]
 
         for config_dict in test_cases:
-            with self.subTest(input=config_dict):
-                with self.assertRaises(ValueError):
-                    Config.from_dict(config_dict)
+            with self.subTest(input=config_dict), self.assertRaises(ValueError):
+                Config.from_dict(config_dict)
 
     def test_load_config_non_existing_file(self):
         non_existing_config_file_path = Path("/non/existent") / "test.json"
@@ -102,7 +101,7 @@ class TestConfig(unittest.TestCase):
         config = handler.load_config()
         self.assertEqual(config, self.test_config)
 
-    @patch("src.config.json.dump", side_effect=IOError("Permission denied"))
+    @patch("src.config.json.dump", side_effect=OSError("Permission denied"))
     def test_save_config_io_error(self, mock_class):
         handler = ConfigHandler(self.config_file_path)
 

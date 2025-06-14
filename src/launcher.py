@@ -85,10 +85,7 @@ class Launcher:
         """
         Launches the warp application using the provided Config.
         """
-        if self._config.is_launch_path_parent_process():
-            launch_path = Path(os.getcwd())
-        else:
-            launch_path = self._config.launch_path
+        launch_path = Path(os.getcwd()) if self._config.is_launch_path_parent_process() else self._config.launch_path
 
         uri = f"warp://action/{self._config.launch_mode.value}?path={launch_path}"
 
@@ -121,7 +118,7 @@ class Launcher:
 
             self._app_paths_register.register(self._config.command_name)
         except (RuntimeError, OSError) as e:
-            raise RuntimeError(f"Failed to install. {e}")
+            raise RuntimeError(f"Failed to install. {e}") from e
 
         logger.info(f"Installation completed successfully, type 'start {self.command_name}' to open")
 
@@ -136,7 +133,7 @@ class Launcher:
 
             self._remove_install_directory()
         except RuntimeError as e:
-            raise RuntimeError(f"Failed to uninstall. {e}")
+            raise RuntimeError(f"Failed to uninstall. {e}") from e
 
         logger.info("Uninstallation completed successfully")
 
@@ -150,7 +147,7 @@ class Launcher:
 
         try:
             shutil.rmtree(self.install_directory)
-            logger.info(f"Installation directory removed")
+            logger.info("Installation directory removed")
         except OSError as e:
             logger.error(f"Error removing installation directory '{self.install_directory}': {e}")
-            raise RuntimeError(f"Error removing installation directory: {e}")
+            raise RuntimeError(f"Error removing installation directory: {e}") from e

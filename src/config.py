@@ -89,6 +89,6 @@ class ConfigHandler:
                 json.dump(config_dict, config_file, indent=4)
                 logger.debug(f"Saved configuration '{config_dict}'")
             return True, None
-        except IOError as e:
+        except OSError as e:
             logger.error(f"Error saving configuration '{self.config_file_path}' with content '{config_dict}': {e}")
-            raise RuntimeError(f"Error saving configuration: {e}")
+            raise RuntimeError(f"Error saving configuration: {e}") from e
