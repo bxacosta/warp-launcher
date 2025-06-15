@@ -11,15 +11,20 @@ enabling you to start Warp directly from the Windows Explorer address bar or fro
 - Choose between launching Warp in a new window or a new tab.
 - Automatically create a launcher script and register the command within Windows registry `App Paths` Subkey.
 
+## Requirements
+
+- Python 3.12 or later
+- [Warp Terminal](https://www.warp.dev/download) for Windows
+
 ## Quick Start
 
-1. **Requirements:**
-    - Python 3.12 or later
-    - [Warp terminal](https://www.warp.dev/download) for Windows
-
-2. **Clone the repository:**
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/bxacosta/warp-launcher.git
+   ```
+
+2. **Navigate to the project directory:**
+   ```bash
    cd warp-launcher
    ```
 
@@ -28,12 +33,8 @@ enabling you to start Warp directly from the Windows Explorer address bar or fro
     python main.py -i
     ```
 
-4. **Test if it works:**
-    - Type `warp` into the Windows Explorer address bar and press `Enter`.
-    - Alternatively, you can execute `start warp` from the console.
-
 > [!TIP]
-> Type `python main.py -h` to display the help message.
+> Type `python main.py -v` to print current configuration.
 
 ## Project Structure
 
@@ -69,6 +70,26 @@ uv run tests.py
 ```
 
 This will discover and run all test files in the `tests` directory that match the pattern `test*.py`.
+
+### Code Linting
+
+To run code linting with [Ruff](https://github.com/astral-sh/ruff), execute:
+
+```bash
+uv run ruff check
+```
+
+This will analyze the code for potential issues and style violations.
+
+### Code Formatting
+
+To format code with Ruff, execute:
+
+```bash
+uv run ruff format
+```
+
+This will automatically format the code according to the project's style guidelines.
 
 ### Type Checking
 
