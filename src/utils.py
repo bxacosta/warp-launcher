@@ -1,10 +1,14 @@
 import logging
 import os
 import re
+from collections.abc import Hashable
 from pathlib import Path
+from typing import TypeVar
 
 from src.logger import setup_logger
-from src.types import K, V
+
+_K = TypeVar("_K", bound=Hashable)
+_V = TypeVar("_V")
 
 logger = setup_logger(__name__)
 
@@ -76,7 +80,7 @@ def validate_command_name(command_name: str | None) -> tuple[str | None, str | N
     return command_name, None
 
 
-def merge_dicts(dict_a: dict[K, V], dict_b: dict[K, V]) -> dict[K, V | None]:
+def merge_dicts(dict_a: dict[_K, _V], dict_b: dict[_K, _V]) -> dict[_K, _V | None]:
     """
     Merge two dictionaries prioritizing dict_b's value if dict_a's value is not truthy
     """
