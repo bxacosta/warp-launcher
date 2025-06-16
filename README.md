@@ -96,7 +96,7 @@ This will automatically format the code according to the project's style guideli
 To run static type checking with [mypy](https://mypy.readthedocs.io/en/stable/), execute:
 
 ```bash
-uv run mypy src
+uv run mypy
 ```
 
 This will validate type annotations across the project's source code files.

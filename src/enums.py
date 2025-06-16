@@ -20,9 +20,9 @@ class LaunchMode(Enum):
             return None
 
         try:
-            return getattr(cls, name.upper())
-        except AttributeError:
+            return cls[name.upper()]
+        except KeyError:
             return None
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name.lower()

@@ -78,7 +78,7 @@ class ConfigHandler:
             logger.error(f"Error loading configuration from '{self.config_file_path}': {e}")
             return default_config
 
-    def save_config(self, config: Config):
+    def save_config(self, config: Config) -> None:
         """
         Save the provided configuration to file.
         """
@@ -88,7 +88,6 @@ class ConfigHandler:
             with self.config_file_path.open("w", encoding="utf-8") as config_file:
                 json.dump(config_dict, config_file, indent=4)
                 logger.debug(f"Saved configuration '{config_dict}'")
-            return True, None
         except OSError as e:
             logger.error(f"Error saving configuration '{self.config_file_path}' with content '{config_dict}': {e}")
             raise RuntimeError(f"Error saving configuration: {e}") from e

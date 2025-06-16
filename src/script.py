@@ -10,7 +10,7 @@ class ScriptHandler:
     def __init__(self, script_file_path: Path) -> None:
         self._script_file_path: Path = script_file_path
 
-    def save_script(self, config: Config):
+    def save_script(self, config: Config) -> None:
         """
         Creates or updates the .vbs launcher script in the installation directory.
         """

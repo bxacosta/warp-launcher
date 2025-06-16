@@ -4,6 +4,7 @@ import re
 from pathlib import Path
 
 from src.logger import setup_logger
+from src.types import K, V
 
 logger = setup_logger(__name__)
 
@@ -75,7 +76,7 @@ def validate_command_name(command_name: str | None) -> tuple[str | None, str | N
     return command_name, None
 
 
-def merge_dicts(dict_a: dict, dict_b: dict) -> dict:
+def merge_dicts(dict_a: dict[K, V], dict_b: dict[K, V]) -> dict[K, V | None]:
     """
     Merge two dictionaries prioritizing dict_b's value if dict_a's value is not truthy
     """

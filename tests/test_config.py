@@ -93,9 +93,8 @@ class TestConfig(unittest.TestCase):
 
     def test_save_and_load_config(self):
         handler = ConfigHandler(self.config_file_path)
-        save_result, _ = handler.save_config(self.test_config)
+        handler.save_config(self.test_config)
 
-        self.assertTrue(save_result)
         self.assertTrue(self.config_file_path.exists())
 
         config = handler.load_config()

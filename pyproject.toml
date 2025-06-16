@@ -22,3 +22,8 @@ select = ["E", "F", "I", "B", "C4", "T20", "UP", "SIM", "RUF"]
 
 [tool.ruff.format]
 quote-style = "double"
+
+[tool.mypy]
+files = ["src"]
+python_version = "3.12"
+strict = true

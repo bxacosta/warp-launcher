@@ -22,7 +22,7 @@ class AppPathsRegister:
         self.__hkey = winreg.HKEY_CURRENT_USER
         self.executable_file_path: Path = executable_file_path
 
-    def register(self, executable_name: str):
+    def register(self, executable_name: str) -> None:
         """
         Registers the application in Windows App Paths Subkey.
         """
@@ -41,7 +41,7 @@ class AppPathsRegister:
             logger.error(f"Error registering key '{subkey}' with value '{self.executable_file_path}': {e}")
             raise RuntimeError(f"Error registering App Paths registry key: {e}") from e
 
-    def unregister(self, executable_name: str):
+    def unregister(self, executable_name: str) -> None:
         """
         Unregisters the application from Windows App Paths Subkey.
         """
@@ -50,7 +50,6 @@ class AppPathsRegister:
         logger.debug(f"Removing key '{subkey}' from '{_HKEY_NAME}'")
         if not self.is_registered(executable_name):
             logger.info("Key is not registered")
-            return True, None
 
         try:
             winreg.DeleteKey(self.__hkey, subkey)

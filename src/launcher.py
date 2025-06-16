@@ -50,7 +50,7 @@ class Launcher:
         return self._config.command_name
 
     @command_name.setter
-    def command_name(self, new_command_name: str):
+    def command_name(self, new_command_name: str) -> None:
         command_name, error = validate_command_name(new_command_name)
         if not command_name:
             raise ValueError(error)
@@ -62,7 +62,7 @@ class Launcher:
         return self._config.launch_mode
 
     @launch_mode.setter
-    def launch_mode(self, new_launch_mode: str):
+    def launch_mode(self, new_launch_mode: str) -> None:
         launch_mode = LaunchMode.from_name(new_launch_mode)
         if not launch_mode:
             raise ValueError(f"Invalid mode specified: '{new_launch_mode}'")
@@ -74,7 +74,7 @@ class Launcher:
         return self._config.launch_path
 
     @launch_path.setter
-    def launch_path(self, new_launch_path: str):
+    def launch_path(self, new_launch_path: str) -> None:
         path, error = validate_path(new_launch_path)
         if not path:
             raise ValueError(error)
@@ -99,7 +99,7 @@ class Launcher:
         logger.info(f"Warp launched in '{self._config.launch_mode}' mode at '{launch_path}'")
         return launch_path
 
-    def install(self):
+    def install(self) -> None:
         """
         Persists the configuration by saving the script, the configuration file,
         and registering the command in the App Paths registry.
@@ -122,7 +122,7 @@ class Launcher:
 
         logger.info(f"Installation completed successfully, type 'start {self.command_name}' to open")
 
-    def uninstall(self):
+    def uninstall(self) -> None:
         """
         Removes the installation directory and unregisters the command from the App Paths registry.
         """
@@ -137,13 +137,12 @@ class Launcher:
 
         logger.info("Uninstallation completed successfully")
 
-    def _remove_install_directory(self):
+    def _remove_install_directory(self) -> None:
         # Remove installation directory if it exists
         logger.debug(f"Removing installation directory '{self.install_directory}'")
 
         if not self.install_directory.exists():
             logger.info("Installation directory does not exist")
-            return True, None
 
         try:
             shutil.rmtree(self.install_directory)
