@@ -2,6 +2,8 @@ import unittest
 from pathlib import Path
 from unittest.mock import mock_open, patch
 
+import pytest
+
 from src.config import Config
 from src.constants import PARENT_PROCESS_IDENTIFIER
 from src.enums import LaunchMode
@@ -52,4 +54,4 @@ class TestScriptHandler(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    pytest.main()

@@ -4,6 +4,8 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+import pytest
+
 # noinspection PyProtectedMember
 from src.config import _COMMAND_NAME_KEY, _LAUNCH_MODE_KEY, _LAUNCH_PATH_KEY, Config, ConfigHandler
 from src.constants import DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH
@@ -121,4 +123,4 @@ class TestConfig(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    pytest.main()
