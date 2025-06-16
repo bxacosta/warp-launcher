@@ -63,10 +63,10 @@ warp-launcher/
 
 ### Running Tests
 
-To run all unit tests, execute the `tests.py` file:
+To run all unit tests with [pytest](https://docs.pytest.org/en/stable/index.html), execute:
 
 ```bash
-uv run tests.py
+uv run pytest
 ```
 
 This will discover and run all test files in the `tests` directory that match the pattern `test*.py`.
@@ -83,7 +83,7 @@ This will analyze the code for potential issues and style violations.
 
 ### Code Formatting
 
-To format code with Ruff, execute:
+To format code with [Ruff](https://github.com/astral-sh/ruff), execute:
 
 ```bash
 uv run ruff format
@@ -93,7 +93,7 @@ This will automatically format the code according to the project's style guideli
 
 ### Type Checking
 
-To run static type checking with [mypy](https://mypy.readthedocs.io/en/stable/), execute:
+To run static type checking with [mypy](https://mypy-lang.org/), execute:
 
 ```bash
 uv run mypy

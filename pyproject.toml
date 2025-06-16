@@ -9,9 +9,11 @@ dependencies = []
 [dependency-groups]
 dev = [
     "mypy>=1.15.0",
+    "pytest>=8.4.1",
     "ruff>=0.12.1",
 ]
 
+# RUFF
 [tool.ruff]
 src = ["src"]
 line-length = 120
@@ -23,7 +25,14 @@ select = ["E", "F", "I", "B", "C4", "T20", "UP", "SIM", "RUF"]
 [tool.ruff.format]
 quote-style = "double"
 
+# MYPY
 [tool.mypy]
 files = ["src"]
 python_version = "3.12"
 strict = true
+
+# PYTEST
+[tool.pytest.ini_options]
+addopts = ["--verbose", "--import-mode=importlib"]
+testpaths = ["tests"]
+pythonpath = ["."]
