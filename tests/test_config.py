@@ -26,24 +26,26 @@ class TestConfig(unittest.TestCase):
 
     def test_config_to_dict(self):
         for launch_mode_item in LaunchMode:
-            config = Config(self.test_config.command_name, launch_mode_item, self.test_config.launch_path)
-            expected_dict = {
-                _COMMAND_NAME_KEY: self.test_config.command_name,
-                _LAUNCH_MODE_KEY: str(launch_mode_item),
-                _LAUNCH_PATH_KEY: str(self.test_config.launch_path),
-            }
-            self.assertEqual(config.to_dict(), expected_dict)
+            with self.subTest(launch_mode_item=launch_mode_item):
+                config = Config(self.test_config.command_name, launch_mode_item, self.test_config.launch_path)
+                expected_dict = {
+                    _COMMAND_NAME_KEY: self.test_config.command_name,
+                    _LAUNCH_MODE_KEY: str(launch_mode_item),
+                    _LAUNCH_PATH_KEY: str(self.test_config.launch_path),
+                }
+                self.assertEqual(config.to_dict(), expected_dict)
 
     def test_config_from_dict_with_valid_data(self):
         for launch_mode_item in LaunchMode:
-            config_dict = {
-                _COMMAND_NAME_KEY: self.test_config.command_name,
-                _LAUNCH_MODE_KEY: str(launch_mode_item),
-                _LAUNCH_PATH_KEY: str(self.test_config.launch_path),
-            }
-            config = Config.from_dict(config_dict)
-            expected_config = Config(self.test_config.command_name, launch_mode_item, self.test_config.launch_path)
-            self.assertEqual(config, expected_config)
+            with self.subTest(launch_mode_item=launch_mode_item):
+                config_dict = {
+                    _COMMAND_NAME_KEY: self.test_config.command_name,
+                    _LAUNCH_MODE_KEY: str(launch_mode_item),
+                    _LAUNCH_PATH_KEY: str(self.test_config.launch_path),
+                }
+                config = Config.from_dict(config_dict)
+                expected_config = Config(self.test_config.command_name, launch_mode_item, self.test_config.launch_path)
+                self.assertEqual(config, expected_config)
 
     def test_config_from_dict_with_invalid_config(self):
         test_cases = [
@@ -66,7 +68,7 @@ class TestConfig(unittest.TestCase):
         ]
 
         for config_dict in test_cases:
-            with self.subTest(input=config_dict), self.assertRaises(ValueError):
+            with self.subTest(config_dict=config_dict), self.assertRaises(ValueError):
                 Config.from_dict(config_dict)
 
     def test_load_config_non_existing_file(self):
