@@ -6,9 +6,7 @@ from pathlib import Path
 from src.constants import DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH, LOG_LEVEL
 from src.enums import LaunchMode
 from src.launcher import Launcher
-from src.logger import setup_logger
-
-logger = setup_logger(__name__)
+from src.logger import configure_logging
 
 
 def parse_cli_arguments(args: list[str] | None = None) -> argparse.Namespace:
@@ -71,8 +69,11 @@ def cli() -> int:
     """Main entry point for the CLI."""
     args = parse_cli_arguments()
 
-    # Set log level based on verbosity
-    logging.getLogger().setLevel(logging.DEBUG if getattr(args, "verbose", False) else LOG_LEVEL)
+    # Set the log level based on verbosity
+    log_level = logging.DEBUG if getattr(args, "verbose", False) else LOG_LEVEL
+    configure_logging(level=log_level)
+
+    logger = logging.getLogger(__name__)
 
     try:
         launcher = Launcher()
@@ -95,7 +96,7 @@ def cli() -> int:
         if getattr(args, "uninstall", False):
             launcher.uninstall()
     except Exception as e:
-        logger.error(e)
+        logger.error(e, exc_info=True)
         return 1
 
     return 0

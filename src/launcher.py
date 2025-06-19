@@ -1,3 +1,4 @@
+import logging
 import os
 import shutil
 import subprocess
@@ -6,12 +7,11 @@ from pathlib import Path
 from src.config import ConfigHandler
 from src.constants import CONFIG_FILE_NAME, INSTALL_DIRECTORY, LAUNCHER_SCRIPT_NAME
 from src.enums import LaunchMode
-from src.logger import setup_logger
 from src.registry import AppPathsRegister
 from src.script import ScriptHandler
 from src.utils import validate_command_name, validate_path
 
-logger = setup_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class Launcher:

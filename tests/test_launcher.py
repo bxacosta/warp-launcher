@@ -10,8 +10,6 @@ from src.config import Config
 from src.enums import LaunchMode
 from src.launcher import Launcher
 
-logging.getLogger().setLevel(logging.CRITICAL)
-
 
 class TestLauncher(unittest.TestCase):
     def setUp(self):

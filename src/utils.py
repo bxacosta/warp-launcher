@@ -5,12 +5,10 @@ from collections.abc import Hashable
 from pathlib import Path
 from typing import TypeVar
 
-from src.logger import setup_logger
+logger = logging.getLogger(__name__)
 
 _K = TypeVar("_K", bound=Hashable)
 _V = TypeVar("_V")
-
-logger = setup_logger(__name__)
 
 
 def string_to_path(path_str: str | None) -> Path | None:

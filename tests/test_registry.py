@@ -1,4 +1,3 @@
-import logging
 import unittest
 import winreg
 from pathlib import Path
@@ -7,8 +6,6 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from src.registry import AppPathsRegister
-
-logging.getLogger().setLevel(logging.CRITICAL)
 
 
 class TestAppPathsRegister(unittest.TestCase):

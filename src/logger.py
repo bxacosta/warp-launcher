@@ -26,18 +26,12 @@ class ColorFormatter(logging.Formatter):
         return f"{color}{message}{_DEFAULT}"
 
 
-def setup_logger(name: str | None = None, level: int = logging.NOTSET) -> logging.Logger:
+def configure_logging(level: int = logging.INFO):
     """Configure console logger."""
+    root_logger = logging.getLogger()
+    root_logger.setLevel(level)
 
-    logger = logging.getLogger(name or __name__)
-    logger.setLevel(level)
-
-    if not logger.handlers:
+    if not root_logger.handlers:
         handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(level)
-
         handler.setFormatter(ColorFormatter(LOG_FORMAT))
-        logger.addHandler(handler)
-        logger.propagate = False
-
-    return logger
+        root_logger.addHandler(handler)

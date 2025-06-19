@@ -1,9 +1,9 @@
+import logging
 from pathlib import Path
 
 from src.config import Config
-from src.logger import setup_logger
 
-logger = setup_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class ScriptHandler:

@@ -1,4 +1,3 @@
-import logging
 import tempfile
 import unittest
 from pathlib import Path
@@ -10,8 +9,6 @@ import pytest
 from src.config import _COMMAND_NAME_KEY, _LAUNCH_MODE_KEY, _LAUNCH_PATH_KEY, Config, ConfigHandler
 from src.constants import DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH
 from src.enums import LaunchMode
-
-logging.getLogger().setLevel(logging.CRITICAL)
 
 
 class TestConfig(unittest.TestCase):

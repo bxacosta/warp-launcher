@@ -1,18 +1,18 @@
 import json
+import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Final
 
 from src.constants import DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH, PARENT_PROCESS_IDENTIFIER
 from src.enums import LaunchMode
-from src.logger import setup_logger
 from src.utils import merge_dicts, validate_command_name, validate_path
 
 _COMMAND_NAME_KEY: Final[str] = "commandName"
 _LAUNCH_MODE_KEY: Final[str] = "launchMode"
 _LAUNCH_PATH_KEY: Final[str] = "launchPath"
 
-logger = setup_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 @dataclass

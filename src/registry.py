@@ -1,13 +1,12 @@
+import logging
 import winreg
 from pathlib import Path
 from typing import Final
 
-from src.logger import setup_logger
-
 _HKEY_NAME: Final[str] = "HKEY_CURRENT_USER"
 _APP_PATHS_SUBKEY: Final[str] = r"Software\Microsoft\Windows\CurrentVersion\App Paths"
 
-logger = setup_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def _build_app_paths_subkey(executable_name: str) -> str:
