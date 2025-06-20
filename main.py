@@ -1,6 +1,6 @@
 import sys
 
-from src.cli import cli
+from src.cli import main
 
 if __name__ == "__main__":
-    sys.exit(cli())
+    sys.exit(main())

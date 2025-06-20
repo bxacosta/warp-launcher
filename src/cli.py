@@ -65,38 +65,37 @@ def parse_cli_arguments(args: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
-def cli() -> int:
+def main(args: list[str] | None = None) -> int:
     """Main entry point for the CLI."""
-    args = parse_cli_arguments()
+    parsed_args = parse_cli_arguments(args)
 
     # Set the log level based on verbosity
-    log_level = logging.DEBUG if getattr(args, "verbose", False) else LOG_LEVEL
+    log_level = logging.DEBUG if getattr(parsed_args, "verbose", False) else LOG_LEVEL
     configure_logging(level=log_level)
 
     logger = logging.getLogger(__name__)
+    logger.debug("Executing main function with args: %s", parsed_args)
 
     try:
         launcher = Launcher()
 
-        if getattr(args, "command", None):
-            launcher.command_name = args.command
+        if getattr(parsed_args, "command", None):
+            launcher.command_name = parsed_args.command
 
-        if getattr(args, "mode", None):
-            launcher.launch_mode = args.mode
+        if getattr(parsed_args, "mode", None):
+            launcher.launch_mode = parsed_args.mode
 
-        if getattr(args, "path", None):
-            launcher.launch_path = args.path
+        if getattr(parsed_args, "path", None):
+            launcher.launch_path = parsed_args.path
 
-        if getattr(args, "launch", False):
+        if getattr(parsed_args, "launch", False):
             launcher.launch_warp()
-
-        if getattr(args, "install", False):
+        elif getattr(parsed_args, "install", False):
             launcher.install()
-
-        if getattr(args, "uninstall", False):
+        elif getattr(parsed_args, "uninstall", False):
             launcher.uninstall()
     except Exception as e:
-        logger.error(e, exc_info=True)
+        logger.error("An unexpected error occurred: %s", e, exc_info=True)
         return 1
 
     return 0
