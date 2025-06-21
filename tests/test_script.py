@@ -3,7 +3,6 @@ from pathlib import Path
 from unittest.mock import mock_open, patch
 
 import pytest
-
 from src.config import Config
 from src.constants import PARENT_PROCESS_IDENTIFIER
 from src.enums import LaunchMode

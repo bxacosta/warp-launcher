@@ -1,11 +1,9 @@
-import logging
 import subprocess
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-
 from src.config import Config
 from src.enums import LaunchMode
 from src.launcher import Launcher
