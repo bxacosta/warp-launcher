@@ -1,0 +1,74 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  quality:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.7.19"
+          enable-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install dependencies
+        run: |
+          uv sync --locked --all-extras --dev
+
+      - name: Run Ruff linter
+        run: |
+          uv run ruff check
+
+      - name: Run Ruff formatter
+        run: |
+          uv run ruff format --check
+
+      - name: Run MyPy type checker
+        run: |
+          uv run mypy
+
+  test:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.7.19"
+          enable-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install dependencies
+        run: |
+          uv sync --locked --all-extras --dev
+
+      - name: Run tests
+        run: |
+          uv run pytest --junit-xml=build/test-results.xml
+
+      - name: Generate test report
+        uses: dorny/test-reporter@v2
+        if: always()
+        with:
+          name: Test Results PyTest
+          path: build/test-results.xml
+          reporter: java-junit
