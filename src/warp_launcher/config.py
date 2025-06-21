@@ -4,9 +4,14 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Final
 
-from src.constants import DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH, PARENT_PROCESS_IDENTIFIER
-from src.enums import LaunchMode
-from src.utils import merge_dicts, validate_command_name, validate_path
+from warp_launcher.constants import (
+    DEFAULT_COMMAND_NAME,
+    DEFAULT_LAUNCH_MODE,
+    DEFAULT_LAUNCH_PATH,
+    PARENT_PROCESS_IDENTIFIER,
+)
+from warp_launcher.enums import LaunchMode
+from warp_launcher.utils import merge_dicts, validate_command_name, validate_path
 
 _COMMAND_NAME_KEY: Final[str] = "commandName"
 _LAUNCH_MODE_KEY: Final[str] = "launchMode"

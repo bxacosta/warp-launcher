@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 
-from src.config import Config
+from warp_launcher.config import Config
 
 logger = logging.getLogger(__name__)
 

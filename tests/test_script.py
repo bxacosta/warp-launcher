@@ -3,10 +3,11 @@ from pathlib import Path
 from unittest.mock import mock_open, patch
 
 import pytest
-from src.config import Config
-from src.constants import PARENT_PROCESS_IDENTIFIER
-from src.enums import LaunchMode
-from src.script import ScriptHandler
+
+from warp_launcher.config import Config
+from warp_launcher.constants import PARENT_PROCESS_IDENTIFIER
+from warp_launcher.enums import LaunchMode
+from warp_launcher.script import ScriptHandler
 
 
 class TestScriptHandler(unittest.TestCase):

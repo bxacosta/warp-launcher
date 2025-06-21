@@ -6,9 +6,9 @@ from unittest.mock import patch
 import pytest
 
 # noinspection PyProtectedMember
-from src.config import _COMMAND_NAME_KEY, _LAUNCH_MODE_KEY, _LAUNCH_PATH_KEY, Config, ConfigHandler
-from src.constants import DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH
-from src.enums import LaunchMode
+from warp_launcher.config import _COMMAND_NAME_KEY, _LAUNCH_MODE_KEY, _LAUNCH_PATH_KEY, Config, ConfigHandler
+from warp_launcher.constants import DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH
+from warp_launcher.enums import LaunchMode
 
 
 class TestConfig(unittest.TestCase):
@@ -101,7 +101,7 @@ class TestConfig(unittest.TestCase):
         config = handler.load_config()
         self.assertEqual(config, self.test_config)
 
-    @patch("src.config.json.dump", side_effect=OSError("Permission denied"))
+    @patch("warp_launcher.config.json.dump", side_effect=OSError("Permission denied"))
     def test_save_config_io_error(self, mock_class):
         handler = ConfigHandler(self.config_file_path)
 

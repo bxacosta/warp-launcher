@@ -4,12 +4,12 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from src.config import ConfigHandler
-from src.constants import CONFIG_FILE_NAME, INSTALL_DIRECTORY, LAUNCHER_SCRIPT_NAME
-from src.enums import LaunchMode
-from src.registry import AppPathsRegister
-from src.script import ScriptHandler
-from src.utils import validate_command_name, validate_path
+from warp_launcher.config import ConfigHandler
+from warp_launcher.constants import CONFIG_FILE_NAME, INSTALL_DIRECTORY, LAUNCHER_SCRIPT_NAME
+from warp_launcher.enums import LaunchMode
+from warp_launcher.registry import AppPathsRegister
+from warp_launcher.script import ScriptHandler
+from warp_launcher.utils import validate_command_name, validate_path
 
 logger = logging.getLogger(__name__)
 

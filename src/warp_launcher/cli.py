@@ -3,10 +3,10 @@ import logging
 import sys
 from pathlib import Path
 
-from src.constants import DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH, LOG_LEVEL
-from src.enums import LaunchMode
-from src.launcher import Launcher
-from src.logger import configure_logging
+from warp_launcher.constants import DEFAULT_COMMAND_NAME, DEFAULT_LAUNCH_MODE, DEFAULT_LAUNCH_PATH, LOG_LEVEL
+from warp_launcher.enums import LaunchMode
+from warp_launcher.launcher import Launcher
+from warp_launcher.logger import configure_logging
 
 
 def parse_cli_arguments(args: list[str] | None = None) -> argparse.Namespace:

@@ -4,7 +4,8 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
-from src.registry import AppPathsRegister
+
+from warp_launcher.registry import AppPathsRegister
 
 
 class TestAppPathsRegister(unittest.TestCase):
@@ -34,7 +35,7 @@ class TestAppPathsRegister(unittest.TestCase):
 
         mock_create_key.assert_called_once()
 
-    @patch("src.registry.AppPathsRegister.is_registered", return_value=True)
+    @patch("warp_launcher.registry.AppPathsRegister.is_registered", return_value=True)
     @patch("winreg.DeleteKey", side_effect=Exception("Access denied"))
     def test_unregister_failure(self, mock_delete_key, mock_is_registered):
         with self.assertRaises(RuntimeError):

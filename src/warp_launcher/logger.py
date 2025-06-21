@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from src.constants import LOG_FORMAT
+from warp_launcher.constants import LOG_FORMAT
 
 # ANSI color codes
 _DEFAULT = "\033[0m"

@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from typing import Final
 
-from src.enums import LaunchMode
+from warp_launcher.enums import LaunchMode
 
 CONFIG_FILE_NAME: Final[str] = "config.json"
 LAUNCHER_SCRIPT_NAME: Final[str] = "launcher.vbs"
