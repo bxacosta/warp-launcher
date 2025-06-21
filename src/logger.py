@@ -26,7 +26,7 @@ class ColorFormatter(logging.Formatter):
         return f"{color}{message}{_DEFAULT}"
 
 
-def configure_logging(level: int = logging.INFO):
+def configure_logging(level: int = logging.INFO) -> None:
     """Configure console logger."""
     root_logger = logging.getLogger()
     root_logger.setLevel(level)
