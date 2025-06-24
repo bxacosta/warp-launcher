@@ -5,6 +5,24 @@ description = "A CLI tool that creates a launch script to run the Warp Terminal"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []
+authors = [
+    { name = "Bryan Acosta", email = "hello@bxlab.dev" },
+]
+keywords = ["warp", "terminal", "launcher", "windows", "cli"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Shells",
+    "Topic :: Terminals",
+]
+
+[project.urls]
+Homepage = "https://github.com/bxacosta/warp-launcher"
+Repository = "https://github.com/bxacosta/warp-launcher"
 
 [project.scripts]
 warp-launcher = "warp_launcher.cli:main"
@@ -44,3 +62,9 @@ strict = true
 addopts = ["--verbose", "--import-mode=importlib"]
 testpaths = ["tests"]
 pythonpath = ["src"]
+
+# GitLab Package Registry
+[[tool.uv.index]]
+name = "gitlab"
+url = "https://gitlab.com/api/v4/projects/70108742/packages/pypi/simple"
+publish-url = "https://gitlab.com/api/v4/projects/70108742/packages/pypi"
