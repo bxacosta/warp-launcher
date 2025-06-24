@@ -40,7 +40,7 @@ enabling you to start Warp directly from the Windows Explorer address bar or fro
 
 ```text
 warp-launcher/
-├── src/
+├── src/warp_launcher/
 │   ├── cli.py           # CLI argument handling
 │   ├── config.py        # User configuration management
 │   ├── constants.py     # Global project constants
@@ -60,6 +60,25 @@ warp-launcher/
 
 > [!NOTE]
 > This project uses [uv](https://docs.astral.sh/uv/) as the package manager.
+
+### Pre-commit Hooks
+
+This project uses [pre-commit](https://pre-commit.com/) to automatically run code quality checks before each commit. The hooks include:
+
+- **Ruff**: Code linting and formatting
+- **MyPy**: Static type checking
+
+To install pre-commit hooks:
+
+```bash
+uv run pre-commit install
+```
+
+To manually run all hooks on all files:
+
+```bash
+uv run pre-commit run --all-files
+```
 
 ### Running Tests
 
@@ -114,3 +133,7 @@ This will validate type annotations across the project's source code files.
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
+
+- [] COnfigurar bien el reporte del test
+- configurar la platafomra de que solo es para windows
