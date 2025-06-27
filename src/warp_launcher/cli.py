@@ -9,49 +9,49 @@ from warp_launcher.launcher import Launcher
 from warp_launcher.logger import configure_logging
 
 
+class _SingleLineFormatter(argparse.HelpFormatter):
+    def __init__(self, prog: str) -> None:
+        super().__init__(prog, max_help_position=40, width=120)
+
+
 def parse_cli_arguments(args: list[str] | None = None) -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
         argument_default=argparse.SUPPRESS,
         description="Warp Terminal Launcher",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=_SingleLineFormatter,
     )
 
     parser.add_argument(
         "-m",
         "--mode",
         choices=[str(launch_mode) for launch_mode in LaunchMode],
-        help=f"Select the launch mode for Warp (default: {DEFAULT_LAUNCH_MODE})",
+        help=f"select the launch mode (default: {DEFAULT_LAUNCH_MODE})",
     )
 
     parser.add_argument(
         "-c",
         "--command",
         type=str,
-        help=f"The name of the command to start Warp (default: '{DEFAULT_COMMAND_NAME}')",
+        help=f"command name (default: '{DEFAULT_COMMAND_NAME}')",
     )
 
     parser.add_argument(
         "-p",
         "--path",
         type=Path,
-        help=f"Initial path for Warp (default: '{DEFAULT_LAUNCH_PATH}' for parent process directory).",
+        help=f"initial path (default: '{DEFAULT_LAUNCH_PATH}' for current directory)",
     )
 
-    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose logging.")
+    parser.add_argument("-v", "--verbose", action="store_true", help="enable detailed logging")
 
     action_group = parser.add_mutually_exclusive_group()
+    action_group.add_argument("-l", "--launch", action="store_true", help="launch Warp with the current configuration")
     action_group.add_argument(
-        "-l", "--launch", action="store_true", help="Start Warp with the specified configuration."
+        "-i", "--install", action="store_true", help="install the launcher and configuration files"
     )
     action_group.add_argument(
-        "-i",
-        "--install",
-        action="store_true",
-        help="Save the configuration, create the launch script and register the command.",
-    )
-    action_group.add_argument(
-        "-u", "--uninstall", action="store_true", help="Unregister the command and remove the installation directory."
+        "-u", "--uninstall", action="store_true", help="remove the launcher and configuration files"
     )
 
     # Use command-line args if not provided
