@@ -16,25 +16,72 @@ enabling you to start Warp directly from the Windows Explorer address bar or fro
 - Python 3.12 or later
 - [Warp Terminal](https://www.warp.dev/download) for Windows
 
-## Quick Start
+## Setup
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/bxacosta/warp-launcher.git
-   ```
+Set up the `warp-launcher` CLI tool using one of the following methods:
 
-2. **Navigate to the project directory:**
-   ```bash
-   cd warp-launcher
-   ```
+### Using uvx (Recommended)
 
-3. **Install with default settings:**
-    ```bash
-    python main.py -i
-    ```
+Run the tool directly without installing it locally using [`uvx`](https://docs.astral.sh/uv/guides/tools/):
 
-> [!TIP]
-> Type `python main.py -v` to print current configuration.
+```bash
+uvx --index-url "https://gitlab.com/api/v4/projects/70108742/packages/pypi/simple" warp-launcher
+```
+
+### Using pip
+
+Install the package directly from GitLab using [`pip`](https://pip.pypa.io/en/stable/):
+
+```bash
+pip install --index-url "https://gitlab.com/api/v4/projects/70108742/packages/pypi/simple" warp-launcher
+```
+
+### From Source
+
+Clone the repository and run the tool from source:
+
+```bash
+git clone https://github.com/bxacosta/warp-launcher.git
+cd warp-launcher
+python main.py
+```
+
+## Usage
+
+### Command-Line Options
+
+| Option              | Description                                | Default           |
+|---------------------|--------------------------------------------|-------------------|
+| `-c`, `--command`   | Custom command name                        | `warp`            |
+| `-m`, `--mode`      | Launch mode: `window` or `tab`             | `window`          |
+| `-p`, `--path`      | Initial path                               | Current directory |
+| `-v`, `--verbose`   | Enable detailed logging                    | Off               |
+| `-i`, `--install`   | Install the launcher                       | -                 |
+| `-l`, `--launch`    | Launch Warp with the current configuration | -                 |
+| `-u`, `--uninstall` | Remove the launcher                        | -                 |
+
+### Install
+
+Install with default settings:
+
+```bash
+warp-launcher -i
+```
+
+Install with a custom command (`wp`) and `tab` mode:
+
+```bash
+warp-launcher -c wp -m tab -i
+```
+
+After installation, type `warp` (or your custom command) in any directory from the Explorer address bar or terminal to
+launch Warp at that location.
+
+### Uninstall
+
+```bash
+warp-launcher -u
+```
 
 ## Project Structure
 
@@ -63,7 +110,8 @@ warp-launcher/
 
 ### Pre-commit Hooks
 
-This project uses [pre-commit](https://pre-commit.com/) to automatically run code quality checks before each commit. The hooks include:
+This project uses [pre-commit](https://pre-commit.com/) to automatically run code quality checks before each commit. The
+hooks include:
 
 - **Ruff**: Code linting and formatting
 - **MyPy**: Static type checking
@@ -120,20 +168,27 @@ uv run mypy
 
 This will validate type annotations across the project's source code files.
 
-## How it Works
+## How It Works
 
-- **Configuration:** Settings are saved in a JSON file (`config.json`) within the installation directory.
-- **Registration:** During installation, the app registers the command (customizable, default: `warp`) in
-  Windows [App Paths](https://learn.microsoft.com/en-us/windows/win32/shell/app-registration) Subkey, enabling you to
-  launch Warp from anywhere.
-- **Launcher Script:** A Visual Basic Script (`launcher.vbs`) is created in the installation directory, utilizing
-  the [Warp URI Scheme](https://docs.warp.dev/features/uri-scheme) to open the terminal according to the provided
-  configuration.
+1. **Installation**: When you run `warp-launcher -i`, the tool:
+    - Creates a configuration file (`config.json`) with your settings
+    - Generates a launcher script (`launcher.vbs`) that uses Warp's URI scheme
+    - Registers your command (default: `warp`) in Windows App Paths registry
+    - Installs everything to `%LOCALAPPDATA%\Programs\WarpLauncher\`
+
+2. **Usage**: Once installed, you can:
+    - Type your command in any Explorer address bar to open Warp at that location
+    - Run the command from any terminal/command prompt
+    - The launcher automatically detects the current directory and opens Warp there
+
+3. **Customization**: You can change settings anytime by running the install command again with different options.
+
+> [!TIP]
+> Use `warp-launcher -v -l` to see current configuration and launch Warp with verbose output.
 
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
 
 - [] COnfigurar bien el reporte del test
 - configurar la platafomra de que solo es para windows
