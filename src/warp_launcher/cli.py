@@ -38,11 +38,12 @@ def parse_cli_arguments(args: list[str] | None = None) -> argparse.Namespace:
         help=f"Initial path for Warp (default: '{DEFAULT_LAUNCH_PATH}' for parent process directory).",
     )
 
-    parser.add_argument("-l", "--launch", action="store_true", help="Start Warp with the specified configuration.")
-
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose logging.")
 
     action_group = parser.add_mutually_exclusive_group()
+    action_group.add_argument(
+        "-l", "--launch", action="store_true", help="Start Warp with the specified configuration."
+    )
     action_group.add_argument(
         "-i",
         "--install",
