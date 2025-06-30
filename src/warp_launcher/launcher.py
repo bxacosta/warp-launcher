@@ -105,10 +105,13 @@ class Launcher:
         and registering the command in the App Paths registry.
         """
         try:
-            previous_command_name = self._config_handler.load_config().command_name
-            is_previous_command_registered = self._app_paths_register.is_registered(previous_command_name)
-            if previous_command_name != self._config.command_name and is_previous_command_registered:
-                self._app_paths_register.unregister(previous_command_name)
+            if self._config_handler.config_file_path.exists():
+                logger.debug("Found existing configuration, checking if the previous command should be removed")
+                saved_command_name = self._config_handler.load_config().command_name
+                is_command_registered = self._app_paths_register.is_registered(saved_command_name)
+                if saved_command_name != self._config.command_name and is_command_registered:
+                    logger.info(f"Removing previous command '{saved_command_name}'")
+                    self._app_paths_register.unregister(saved_command_name)
 
             self.install_directory.mkdir(exist_ok=True)
 
@@ -120,7 +123,11 @@ class Launcher:
         except (RuntimeError, OSError) as e:
             raise RuntimeError(f"Failed to install. {e}") from e
 
-        logger.info(f"Installation completed successfully, type 'start {self.command_name}' to open")
+        logger.info("Installation completed successfully.")
+        logger.info(
+            f"Now you can type '{self.command_name}' in the Explorer address bar "
+            f"or run 'start {self.command_name}' in the terminal to open Warp at that location."
+        )
 
     def uninstall(self) -> None:
         """
