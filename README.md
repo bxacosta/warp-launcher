@@ -7,9 +7,8 @@ enabling you to start Warp directly from the Windows Explorer address bar or fro
 ## Features
 
 - Open Warp at the current directory from the Windows Explorer address bar or from the console by using the
-  customizable command (default: `warp`).
-- Choose between launching Warp in a new window or a new tab.
-- Automatically create a launcher script and register the command within Windows registry `App Paths` Subkey.
+  customizable command.
+- Customizable launch options, choose between opening Warp in a new window or tab, and define the initial directory path.
 
 ## Requirements
 
@@ -52,10 +51,10 @@ python main.py
 
 | Option              | Description                                | Default           |
 |---------------------|--------------------------------------------|-------------------|
-| `-c`, `--command`   | Custom command name                        | `warp`            |
+| `-c`, `--command`   | Command name                               | `warp`            |
 | `-m`, `--mode`      | Launch mode: `window` or `tab`             | `window`          |
 | `-p`, `--path`      | Initial path                               | Current directory |
-| `-v`, `--verbose`   | Enable detailed logging                    | Off               |
+| `-v`, `--verbose`   | Enable detailed logging                    | Disabled          |
 | `-i`, `--install`   | Install the launcher                       | -                 |
 | `-l`, `--launch`    | Launch Warp with the current configuration | -                 |
 | `-u`, `--uninstall` | Remove the launcher                        | -                 |
@@ -82,6 +81,9 @@ launch Warp at that location.
 ```bash
 warp-launcher -u
 ```
+
+> [!TIP]
+> Use the `-v` option to print detailed logs about the tool’s actions.
 
 ## Project Structure
 
@@ -170,25 +172,15 @@ This will validate type annotations across the project's source code files.
 
 ## How It Works
 
-1. **Installation**: When you run `warp-launcher -i`, the tool:
-    - Creates a configuration file (`config.json`) with your settings
-    - Generates a launcher script (`launcher.vbs`) that uses Warp's URI scheme
-    - Registers your command (default: `warp`) in Windows App Paths registry
-    - Installs everything to `%LOCALAPPDATA%\Programs\WarpLauncher\`
+When installed, `warp-launcher` performs the following actions:
 
-2. **Usage**: Once installed, you can:
-    - Type your command in any Explorer address bar to open Warp at that location
-    - Run the command from any terminal/command prompt
-    - The launcher automatically detects the current directory and opens Warp there
-
-3. **Customization**: You can change settings anytime by running the install command again with different options.
-
-> [!TIP]
-> Use `warp-launcher -v -l` to see current configuration and launch Warp with verbose output.
+- Creates a configuration file (`config.json`) with your settings.
+- Generates a Visual Basic Script (`launcher.vbs`) that
+  uses [Warp's URI scheme](https://docs.warp.dev/features/uri-scheme).
+- Registers the command (default: `warp`) in
+  Windows [App Paths](https://learn.microsoft.com/en-us/windows/win32/shell/app-registration) registry
+- Installs everything to `%LOCALAPPDATA%\Programs\WarpLauncher\`
 
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
-- [] COnfigurar bien el reporte del test
-- configurar la platafomra de que solo es para windows
