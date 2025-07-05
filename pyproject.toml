@@ -34,10 +34,10 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
-    "mypy>=1.15.0",
+    "mypy>=1.16.1",
     "pre-commit>=4.2.0",
     "pytest>=8.4.1",
-    "ruff>=0.12.1",
+    "ruff>=0.12.2",
 ]
 
 # RUFF
