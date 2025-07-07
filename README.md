@@ -68,16 +68,18 @@ Install with default settings:
 warp-launcher -i
 ```
 
-Install with a custom command (`wp`) and `tab` mode:
+Install with a custom command (`wp`) and tab mode:
 
 ```bash
 warp-launcher -c wp -m tab -i
 ```
 
-After installation, type `warp` (or your custom command) in any directory from the Explorer address bar or terminal to
-launch Warp at that location.
+After installation, type `warp` (or your custom command) in any directory from the Explorer address bar or run
+`start warp` from the terminal to launch Warp at that location.
 
 ### Uninstall
+
+Remove al files created by the install process und unregister the command
 
 ```bash
 warp-launcher -u
