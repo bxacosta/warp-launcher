@@ -8,7 +8,8 @@ enabling you to start Warp directly from the Windows Explorer address bar or fro
 
 - Open Warp at the current directory from the Windows Explorer address bar or from the console by using the
   customizable command.
-- Customizable launch options, choose between opening Warp in a new window or tab, and define the initial directory path.
+- Customizable launch options, choose between opening Warp in a new window or tab, and define the initial directory
+  path.
 
 ## Requirements
 
@@ -102,73 +103,7 @@ warp-launcher/
 ├── tests/               # Unit tests
 ├── main.py              # Main entry point
 └── pyproject.toml       # Project configuration file
-
 ```
-
-## Development
-
-> [!NOTE]
-> This project uses [uv](https://docs.astral.sh/uv/) as the package manager.
-
-### Pre-commit Hooks
-
-This project uses [pre-commit](https://pre-commit.com/) to automatically run code quality checks before each commit. The
-hooks include:
-
-- **Ruff**: Code linting and formatting
-- **MyPy**: Static type checking
-
-To install pre-commit hooks:
-
-```bash
-uv run pre-commit install
-```
-
-To manually run all hooks on all files:
-
-```bash
-uv run pre-commit run --all-files
-```
-
-### Running Tests
-
-To run all unit tests with [pytest](https://docs.pytest.org/en/stable/index.html), execute:
-
-```bash
-uv run pytest
-```
-
-This will discover and run all test files in the `tests` directory that match the pattern `test*.py`.
-
-### Code Linting
-
-To run code linting with [Ruff](https://github.com/astral-sh/ruff), execute:
-
-```bash
-uv run ruff check
-```
-
-This will analyze the code for potential issues and style violations.
-
-### Code Formatting
-
-To format code with [Ruff](https://github.com/astral-sh/ruff), execute:
-
-```bash
-uv run ruff format
-```
-
-This will automatically format the code according to the project's style guidelines.
-
-### Type Checking
-
-To run static type checking with [mypy](https://mypy-lang.org/), execute:
-
-```bash
-uv run mypy
-```
-
-This will validate type annotations across the project's source code files.
 
 ## How It Works
 
@@ -180,6 +115,10 @@ When installed, `warp-launcher` performs the following actions:
 - Registers the command (default: `warp`) in
   Windows [App Paths](https://learn.microsoft.com/en-us/windows/win32/shell/app-registration) registry
 - Installs everything to `%LOCALAPPDATA%\Programs\WarpLauncher\`
+
+## Contributing
+
+To contribute to Warp Launcher, see the [Contributing Guidelines](.github/CONTRIBUTING.md).
 
 ## License
 
