@@ -1,6 +1,6 @@
 [project]
 name = "warp-launcher"
-version = "0.1.0"
+version = "1.0.0"
 description = "A CLI tool that creates a launch script to run the Warp Terminal"
 readme = "README.md"
 license-files = ["LICENSE"]
