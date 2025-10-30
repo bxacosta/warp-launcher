@@ -16,35 +16,46 @@ enabling you to start Warp directly from the Windows Explorer address bar or fro
 - Python 3.12 or later
 - [Warp Terminal](https://www.warp.dev/download) for Windows
 
-## Setup
+## Install
 
-Set up the `warp-launcher` CLI tool using one of the following methods:
+Install the `warp-launcher` CLI tool using one of the following methods:
 
-### Using uvx (Recommended)
+### Using `uv tool install` (Recommended)
 
-Run the tool directly without installing it locally using [`uvx`](https://docs.astral.sh/uv/guides/tools/):
+Run the tool directly without installing it locally using [
+`uvx`](https://docs.astral.sh/uv/guides/tools/#installing-tools):
 
 ```bash
-uvx --index-url "https://gitlab.com/api/v4/projects/70108742/packages/pypi/simple" warp-launcher
+uv tool install git+https://github.com/bxacosta/warp-launcher.git
 ```
 
-### Using pip
+### Using `pip install`
 
-Install the package directly from GitLab using [`pip`](https://pip.pypa.io/en/stable/):
+Install the package directly from GitHub using [`pip`](https://pip.pypa.io/en/stable/):
 
 ```bash
-pip install --index-url "https://gitlab.com/api/v4/projects/70108742/packages/pypi/simple" warp-launcher
+pip install git+https://github.com/bxacosta/warp-launcher.git
 ```
 
 ### From Source
 
-Clone the repository and run the tool from source:
+1. Clone the repository and run the tool from source:
 
-```bash
-git clone https://github.com/bxacosta/warp-launcher.git
-cd warp-launcher
-python main.py
-```
+    ```bash
+    git clone https://github.com/bxacosta/warp-launcher.git
+    ```
+
+2. Change into the project directory:
+
+    ```bash
+    cd warp-launcher
+    ```
+
+3. Install in "editable" mode (-e) to link source code.
+
+    ```bash
+    pip install -e .
+    ```
 
 ## Usage
 
